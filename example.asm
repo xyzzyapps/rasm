@@ -5,7 +5,7 @@
 ; Assemble with: nasm -f elf64 example.asm -o example.o
 ; ============================================================================
 
-%include "readable-assembly.inc"
+%include "readable_macros.nasm"
 
 section .data
     greeting    db  "Hello, Readable Assembly!", 10, 0
