@@ -1,6 +1,11 @@
 ; ============================================================================
 ; 05-data-movement.nasm - Data Movement Instructions
 ; ============================================================================
+; Naming: `move dst, src` (Intel order). Variants add explicit detail:
+;   move_byte/move_word/move_dword/move_qword  - sized moves
+;   move_with_sign_extend / move_with_zero_extend
+;   move_if_*                                  - conditional moves (cmov)
+;   exchange / swap, load_effective_address (lea), move_string_*
 
 ; --- Basic Move ---
 %macro move 2
@@ -28,12 +33,28 @@
     movsx %1, %2
 %endmacro
 
+%macro move_with_sign_extend_byte 2
+    movsx %1, size_byte %2
+%endmacro
+
+%macro move_with_sign_extend_word 2
+    movsx %1, size_word %2
+%endmacro
+
 %macro move_with_sign_extend_dword 2
     movsxd %1, %2
 %endmacro
 
 %macro move_with_zero_extend 2
     movzx %1, %2
+%endmacro
+
+%macro move_with_zero_extend_byte 2
+    movzx %1, size_byte %2
+%endmacro
+
+%macro move_with_zero_extend_word 2
+    movzx %1, size_word %2
 %endmacro
 
 ; --- Move with Byte Swap ---
@@ -81,28 +102,31 @@
 %endmacro
 
 ; --- Size Conversion ---
+; The x86 has two families of sign-extending converts:
+;   register form : cbw, cwde, cdqe        (result in the widened accumulator)
+;   pair form     : cwd, cdq, cqo          (result in the rdx:rax style pair)
 %macro convert_byte_to_word 0
     cbw
 %endmacro
 
 %macro convert_word_to_dword 0
-    cwd
-%endmacro
-
-%macro convert_dword_to_qword 0
-    cdq
-%endmacro
-
-%macro convert_qword_to_oword 0
-    cqo
-%endmacro
-
-%macro convert_byte_to_dword 0
     cwde
 %endmacro
 
-%macro convert_word_to_qword 0
+%macro convert_dword_to_qword 0
     cdqe
+%endmacro
+
+%macro convert_word_to_dword_pair 0
+    cwd
+%endmacro
+
+%macro convert_dword_to_qword_pair 0
+    cdq
+%endmacro
+
+%macro convert_qword_to_oword_pair 0
+    cqo
 %endmacro
 
 ; --- String Move ---
@@ -281,4 +305,88 @@
 
 %macro enqueue_command_supervisor 2
     enqcmds %1, %2
+%endmacro
+
+; ============================================================================
+; DATA DEFINITION DIRECTIVES
+; ============================================================================
+; Readable names for the NASM data-definition directives:
+;   define_byte    -> db    define_word  -> dw    define_dword -> dd
+;   define_qword   -> dq    define_tword -> dt    define_oword -> do
+;   define_yword   -> dy    define_zword -> dz
+;   reserve_byte   -> resb  reserve_word -> resw  reserve_dword -> resd
+;   reserve_qword  -> resq  reserve_tword -> rest
+;   equate name, value -> name equ value
+; Usage:
+;   greeting: define_byte "Hello!", 10, 0
+;   score:    define_dword 100
+;   buffer:   reserve_byte 256
+;   equate answer, 42
+; ============================================================================
+%macro define_byte 1+
+    db %1
+%endmacro
+
+%macro define_word 1+
+    dw %1
+%endmacro
+
+%macro define_dword 1+
+    dd %1
+%endmacro
+
+%macro define_qword 1+
+    dq %1
+%endmacro
+
+%macro define_tword 1+
+    dt %1
+%endmacro
+
+%macro define_oword 1+
+    do %1
+%endmacro
+
+%macro define_yword 1+
+    dy %1
+%endmacro
+
+%macro define_zword 1+
+    dz %1
+%endmacro
+
+%macro reserve_byte 1
+    resb %1
+%endmacro
+
+%macro reserve_word 1
+    resw %1
+%endmacro
+
+%macro reserve_dword 1
+    resd %1
+%endmacro
+
+%macro reserve_qword 1
+    resq %1
+%endmacro
+
+%macro reserve_tword 1
+    rest %1
+%endmacro
+
+%macro reserve_oword 1
+    reso %1
+%endmacro
+
+%macro reserve_yword 1
+    resy %1
+%endmacro
+
+%macro reserve_zword 1
+    resz %1
+%endmacro
+
+%macro equate 2
+    %1 equ %2
 %endmacro

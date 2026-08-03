@@ -1,83 +1,9 @@
 ; ============================================================================
 ; 01-registers.nasm - Register Definitions
 ; ============================================================================
-; General Purpose Registers (64-bit)
-%define reg_rax rax
-%define reg_rbx rbx
-%define reg_rcx rcx
-%define reg_rdx rdx
-%define reg_rsi rsi
-%define reg_rdi rdi
-%define reg_rbp rbp
-%define reg_rsp rsp
-%define reg_r8  r8
-%define reg_r9  r9
-%define reg_r10 r10
-%define reg_r11 r11
-%define reg_r12 r12
-%define reg_r13 r13
-%define reg_r14 r14
-%define reg_r15 r15
-
-; General Purpose Registers (32-bit)
-%define reg_eax eax
-%define reg_ebx ebx
-%define reg_ecx ecx
-%define reg_edx edx
-%define reg_esi esi
-%define reg_edi edi
-%define reg_ebp ebp
-%define reg_esp esp
-%define reg_r8d r8d
-%define reg_r9d r9d
-%define reg_r10d r10d
-%define reg_r11d r11d
-%define reg_r12d r12d
-%define reg_r13d r13d
-%define reg_r14d r14d
-%define reg_r15d r15d
-
-; General Purpose Registers (16-bit)
-%define reg_ax ax
-%define reg_bx bx
-%define reg_cx cx
-%define reg_dx dx
-%define reg_si si
-%define reg_di di
-%define reg_bp bp
-%define reg_sp sp
-%define reg_r8w r8w
-%define reg_r9w r9w
-%define reg_r10w r10w
-%define reg_r11w r11w
-%define reg_r12w r12w
-%define reg_r13w r13w
-%define reg_r14w r14w
-%define reg_r15w r15w
-
-; General Purpose Registers (8-bit low)
-%define reg_al al
-%define reg_bl bl
-%define reg_cl cl
-%define reg_dl dl
-%define reg_sil sil
-%define reg_dil dil
-%define reg_bpl bpl
-%define reg_spl spl
-%define reg_r8b r8b
-%define reg_r9b r9b
-%define reg_r10b r10b
-%define reg_r11b r11b
-%define reg_r12b r12b
-%define reg_r13b r13b
-%define reg_r14b r14b
-%define reg_r15b r15b
-
-; General Purpose Registers (8-bit high, legacy)
-%define reg_ah ah
-%define reg_bh bh
-%define reg_ch ch
-%define reg_dh dh
+; NOTE: use the `register_*` aliases defined further below for readable code
+; (register_ax = rax, register_eax = eax, register_al = al, register_ax16 = ax).
+; Raw register names (rax, eax, ax, al, ...) always work as well.
 
 ; Segment Registers
 %define segment_cs cs
@@ -102,11 +28,7 @@
 %define debug_dr6 dr6
 %define debug_dr7 dr7
 
-; Special Registers
-%define reg_rip rip
-%define reg_eflags eflags
-%define reg_rflags rflags
-%define reg_mxcsr mxcsr
+; Readable register aliases (defined in full below)
 
 ; XMM Registers
 %define xmm_0 xmm0
@@ -199,11 +121,133 @@
 %define mask_k7 k7
 
 ; ============================================================================
-; Readable Register Aliases (register-ax = the A register, 64-bit)
-; These provide the self-documenting names used in examples and demos:
-;   register-ax  -> rax   register-eax -> eax   register-al -> al
+; Readable Register Aliases
 ; ============================================================================
-; 64-bit general purpose (readable names)
+; Traditional register names with the width explicit in the name:
+;   accumulator        -> rax   accumulator_32 -> eax
+;   accumulator_64     -> rax   accumulator_16 -> ax
+;                              accumulator_8  -> al
+;                              accumulator_8_high -> ah  (high byte)
+;
+;   base              -> rbx   counter  -> rcx   data -> rdx
+;   source_index      -> rsi   destination_index -> rdi
+;   base_pointer      -> rbp   stack_pointer -> rsp
+;   (each with the same _64/_32/_16/_8/_8_high forms)
+;
+; The extended set keeps the explicit spelling: register_r8 .. register_r15
+; with register_r8_64 / _32 / _16 / _8 (r8d, r8w, r8b).
+; ============================================================================
+; --- Accumulator (A register) ---
+%define accumulator rax
+%define accumulator_64 rax
+%define accumulator_32 eax
+%define accumulator_16 ax
+%define accumulator_8 al
+%define accumulator_8_high ah
+
+; --- Base (B register) ---
+%define base rbx
+%define base_64 rbx
+%define base_32 ebx
+%define base_16 bx
+%define base_8 bl
+%define base_8_high bh
+
+; --- Counter (C register) ---
+%define counter rcx
+%define counter_64 rcx
+%define counter_32 ecx
+%define counter_16 cx
+%define counter_8 cl
+%define counter_8_high ch
+
+; --- Data (D register) ---
+%define data rdx
+%define data_64 rdx
+%define data_32 edx
+%define data_16 dx
+%define data_8 dl
+%define data_8_high dh
+
+; --- Source index (SI) ---
+%define source_index rsi
+%define source_index_64 rsi
+%define source_index_32 esi
+%define source_index_16 si
+%define source_index_8 sil
+
+; --- Destination index (DI) ---
+%define destination_index rdi
+%define destination_index_64 rdi
+%define destination_index_32 edi
+%define destination_index_16 di
+%define destination_index_8 dil
+
+; --- Base pointer (BP) ---
+%define base_pointer rbp
+%define base_pointer_64 rbp
+%define base_pointer_32 ebp
+%define base_pointer_16 bp
+%define base_pointer_8 bpl
+
+; --- Stack pointer (SP) ---
+%define stack_pointer rsp
+%define stack_pointer_64 rsp
+%define stack_pointer_32 esp
+%define stack_pointer_16 sp
+%define stack_pointer_8 spl
+
+; --- Extended registers r8-r15 ---
+%define register_r8 r8
+%define register_r9 r9
+%define register_r10 r10
+%define register_r11 r11
+%define register_r12 r12
+%define register_r13 r13
+%define register_r14 r14
+%define register_r15 r15
+
+%define register_r8_64 r8
+%define register_r8_32 r8d
+%define register_r8_16 r8w
+%define register_r8_8 r8b
+
+%define register_r9_64 r9
+%define register_r9_32 r9d
+%define register_r9_16 r9w
+%define register_r9_8 r9b
+
+%define register_r10_64 r10
+%define register_r10_32 r10d
+%define register_r10_16 r10w
+%define register_r10_8 r10b
+
+%define register_r11_64 r11
+%define register_r11_32 r11d
+%define register_r11_16 r11w
+%define register_r11_8 r11b
+
+%define register_r12_64 r12
+%define register_r12_32 r12d
+%define register_r12_16 r12w
+%define register_r12_8 r12b
+
+%define register_r13_64 r13
+%define register_r13_32 r13d
+%define register_r13_16 r13w
+%define register_r13_8 r13b
+
+%define register_r14_64 r14
+%define register_r14_32 r14d
+%define register_r14_16 r14w
+%define register_r14_8 r14b
+
+%define register_r15_64 r15
+%define register_r15_32 r15d
+%define register_r15_16 r15w
+%define register_r15_8 r15b
+
+; --- Legacy aliases (register_ax / eax / al spellings) ---
 %define register_ax rax
 %define register_bx rbx
 %define register_cx rcx
@@ -213,7 +257,50 @@
 %define register_bp rbp
 %define register_sp rsp
 
-; Explicit 64-bit names
+%define register_ax_64 rax
+%define register_ax_32 eax
+%define register_ax_16 ax
+%define register_ax_8 al
+%define register_ax_8_high ah
+
+%define register_bx_64 rbx
+%define register_bx_32 ebx
+%define register_bx_16 bx
+%define register_bx_8 bl
+%define register_bx_8_high bh
+
+%define register_cx_64 rcx
+%define register_cx_32 ecx
+%define register_cx_16 cx
+%define register_cx_8 cl
+%define register_cx_8_high ch
+
+%define register_dx_64 rdx
+%define register_dx_32 edx
+%define register_dx_16 dx
+%define register_dx_8 dl
+%define register_dx_8_high dh
+
+%define register_si_64 rsi
+%define register_si_32 esi
+%define register_si_16 si
+%define register_si_8 sil
+
+%define register_di_64 rdi
+%define register_di_32 edi
+%define register_di_16 di
+%define register_di_8 dil
+
+%define register_bp_64 rbp
+%define register_bp_32 ebp
+%define register_bp_16 bp
+%define register_bp_8 bpl
+
+%define register_sp_64 rsp
+%define register_sp_32 esp
+%define register_sp_16 sp
+%define register_sp_8 spl
+
 %define register_rax rax
 %define register_rbx rbx
 %define register_rcx rcx
@@ -224,7 +311,6 @@
 %define register_rsp rsp
 %define register_rip rip
 
-; 32-bit
 %define register_eax eax
 %define register_ebx ebx
 %define register_ecx ecx
@@ -234,7 +320,6 @@
 %define register_ebp ebp
 %define register_esp esp
 
-; 16-bit
 %define register_ax16 ax
 %define register_bx16 bx
 %define register_cx16 cx
@@ -244,7 +329,6 @@
 %define register_bp16 bp
 %define register_sp16 sp
 
-; 8-bit low
 %define register_al al
 %define register_bl bl
 %define register_cl cl
@@ -254,23 +338,11 @@
 %define register_bpl bpl
 %define register_spl spl
 
-; 8-bit high (legacy)
 %define register_ah ah
 %define register_bh bh
 %define register_ch ch
 %define register_dh dh
 
-; Extended registers r8-r15 (64-bit)
-%define register_r8 r8
-%define register_r9 r9
-%define register_r10 r10
-%define register_r11 r11
-%define register_r12 r12
-%define register_r13 r13
-%define register_r14 r14
-%define register_r15 r15
-
-; Extended registers (32-bit)
 %define register_r8d r8d
 %define register_r9d r9d
 %define register_r10d r10d
@@ -280,7 +352,6 @@
 %define register_r14d r14d
 %define register_r15d r15d
 
-; Extended registers (16-bit)
 %define register_r8w r8w
 %define register_r9w r9w
 %define register_r10w r10w
@@ -290,7 +361,6 @@
 %define register_r14w r14w
 %define register_r15w r15w
 
-; Extended registers (8-bit)
 %define register_r8b r8b
 %define register_r9b r9b
 %define register_r10b r10b

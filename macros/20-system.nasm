@@ -1,6 +1,9 @@
 ; ============================================================================
 ; 20-system.nasm - System and Privileged Instructions
 ; ============================================================================
+; Highlights: syscall_invoke (syscall), system_enter/system_exit,
+;   halt, no_operation, lock_bus, pause, cpu_identification (cpuid),
+;   read_time_stamp_counter (rdtsc), debug_breakpoint (int3).
 ; Merged from sections 20 and 61
 
 %macro halt 0

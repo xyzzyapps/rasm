@@ -1,6 +1,9 @@
 ; ============================================================================
 ; 13-stack.nasm - Stack Operations
 ; ============================================================================
+; Naming: push/pop, push_onto_stack/pop_from_stack (explicit forms),
+;   push_all/pop_all, push_flags*/pop_flags* (pushf family),
+;   enter_stack_frame/leave_stack_frame.
 
 %macro push 1
     push %1

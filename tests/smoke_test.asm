@@ -14,18 +14,18 @@
 default rel
 
 section .data
-    greeting    db  "Hello, Readable Assembly!", 0
-    scratch     dq  0
+    greeting:   define_byte "Hello, Readable Assembly!", 0
+    scratch:    define_qword 0
 
 section .bss
-    buffer      resb 64
+    buffer:     reserve_byte 64
 
 section .text
 %ifidn __OUTPUT_FORMAT__, win64
     global main
 main:
     ; Windows x64: align stack and reserve shadow space
-    sub     register_rsp, 40
+    sub     stack_pointer, 40
 %else
     global _start
 _start:
@@ -35,59 +35,59 @@ _start:
     ; TEST 1: factorial(5) == 120  (exercises move, call, compare, jumps,
     ;                                push/pop, multiply, sub, ret)
     ; ------------------------------------------------------------------
-    move    register_ax, 5
+    move    accumulator, 5
     call_procedure factorial
-    compare register_ax, 120
+    compare accumulator, 120
     jump_if_not_equal fail
 
     ; ------------------------------------------------------------------
     ; TEST 2: arithmetic  (add, subtract, increment, decrement, negate)
     ; ------------------------------------------------------------------
-    move    register_bx, 100
-    add     register_bx, 22
-    subtract register_bx, 2
-    increment register_bx
-    decrement register_bx
-    compare register_bx, 120
+    move    base, 100
+    add     base, 22
+    subtract base, 2
+    increment base
+    decrement base
+    compare base, 120
     jump_if_not_equal fail
 
     ; ------------------------------------------------------------------
     ; TEST 3: logic  (logical_and, logical_or, logical_xor, logical_not)
     ; ------------------------------------------------------------------
-    move    register_cx, 0x0F0F
-    logical_and register_cx, 0xFF
-    compare register_cx, 0x0F
+    move    counter, 0x0F0F
+    logical_and counter, 0xFF
+    compare counter, 0x0F
     jump_if_not_equal fail
-    logical_or  register_cx, 0xF0
-    compare register_cx, 0xFF
+    logical_or  counter, 0xF0
+    compare counter, 0xFF
     jump_if_not_equal fail
-    logical_xor register_cx, 0xFF
-    compare register_cx, 0
+    logical_xor counter, 0xFF
+    compare counter, 0
     jump_if_not_equal fail
-    logical_not register_cx
-    compare register_cx, -1
+    logical_not counter
+    compare counter, -1
     jump_if_not_equal fail
 
     ; ------------------------------------------------------------------
     ; TEST 4: shifts and rotates
     ; ------------------------------------------------------------------
-    move    register_dx, 1
-    shift_logical_left register_dx, 4
-    compare register_dx, 16
+    move    data, 1
+    shift_logical_left data, 4
+    compare data, 16
     jump_if_not_equal fail
-    shift_logical_right register_dx, 2
-    compare register_dx, 4
+    shift_logical_right data, 2
+    compare data, 4
     jump_if_not_equal fail
-    rotate_left register_dx, 4            ; 4 <<< 4 = 64
-    compare register_dx, 64
+    rotate_left data, 4            ; 4 <<< 4 = 64
+    compare data, 64
     jump_if_not_equal fail
 
     ; ------------------------------------------------------------------
     ; TEST 5: memory operations + load_effective_address
     ; ------------------------------------------------------------------
-    load_effective_address register_si, [greeting]
-    move    [scratch], register_si
-    compare register_si, [scratch]
+    load_effective_address source_index, [greeting]
+    move    [scratch], source_index
+    compare source_index, [scratch]
     jump_if_not_equal fail
 
     ; ------------------------------------------------------------------
@@ -97,7 +97,7 @@ _start:
     set_carry_flag
     push_flags_qword
     pop_flags_qword
-    compare register_ax, 120
+    compare accumulator, 120
     jump_if_not_equal fail
 
     ; ------------------------------------------------------------------
@@ -114,27 +114,72 @@ _start:
     ; ------------------------------------------------------------------
     ; TEST 8: procedures with stack frames
     ; ------------------------------------------------------------------
-    move    register_di, 7
+    move    destination_index, 7
     call_procedure square              ; returns di*di in rax
-    compare register_ax, 49
+    compare accumulator, 49
+    jump_if_not_equal fail
+
+    ; ------------------------------------------------------------------
+    ; TEST 9: readable register widths (accumulator_16 = ax, 16-bit)
+    ; ------------------------------------------------------------------
+    move    accumulator, 0x12345678
+    move    accumulator_16, 0xFFFF      ; writes only the low 16 bits
+    compare accumulator_32, 0x1234FFFF
+    jump_if_not_equal fail
+
+    ; ------------------------------------------------------------------
+    ; TEST 10: sign-extending converts (cdqe sign-extends eax into rax)
+    ; ------------------------------------------------------------------
+    move    accumulator_32, 0x7FFFFFFF   ; positive: high bits cleared
+    convert_dword_to_qword
+    compare accumulator, 0x7FFFFFFF
+    jump_if_not_equal fail
+    move    accumulator_32, -1           ; negative: high bits set
+    convert_dword_to_qword
+    compare accumulator, -1
+    jump_if_not_equal fail
+
+    ; ------------------------------------------------------------------
+    ; TEST 11: sized macros on memory (8/16/32/64-bit forms)
+    ; ------------------------------------------------------------------
+    move    size_dword [scratch], 100
+    add_dword [scratch], 20
+    compare_dword [scratch], 120
+    jump_if_not_equal fail
+    logical_and_byte [scratch], 0xFF
+    compare_byte [scratch], 120
+    jump_if_not_equal fail
+    shift_logical_left_byte [scratch], 2   ; 120 << 2 = 480, truncated to 224
+    compare_byte [scratch], 224
+    jump_if_not_equal fail
+
+    ; ------------------------------------------------------------------
+    ; TEST 12: sized sign/zero extension
+    ; ------------------------------------------------------------------
+    move_byte [scratch], -1              ; 0xFF in the low byte
+    move_with_zero_extend_byte accumulator_32, [scratch]
+    compare accumulator_32, 255
+    jump_if_not_equal fail
+    move_with_sign_extend_byte accumulator, [scratch]
+    compare accumulator, -1
     jump_if_not_equal fail
 
     ; ------------------------------------------------------------------
     ; All tests passed - exit 0
     ; ------------------------------------------------------------------
-    move    register_ax, 0
+    move    accumulator, 0
     jump    exit_now
 
 fail:
-    move    register_ax, 1
+    move    accumulator, 1
 
 exit_now:
 %ifidn __OUTPUT_FORMAT__, win64
-    add     register_rsp, 40
+    add     stack_pointer, 40
     return_from_procedure
 %else
-    move    register_rdi, register_ax   ; exit code
-    move    register_ax, 60             ; sys_exit
+    move    destination_index, accumulator   ; exit code
+    move    accumulator, 60             ; sys_exit
     syscall_invoke
 %endif
 
@@ -142,40 +187,40 @@ exit_now:
 ; factorial(rax) -> rax
 ; ============================================================================
 factorial:
-    push_onto_stack register_bp
-    move    register_bp, register_rsp
-    push_onto_stack register_bx
-    push_onto_stack register_dx
-    compare register_ax, 1
+    push_onto_stack base_pointer
+    move    base_pointer, stack_pointer
+    push_onto_stack base
+    push_onto_stack data
+    compare accumulator, 1
     jump_if_less_or_equal factorial_base
     ; rax = n * factorial(n - 1)
-    move    register_bx, register_ax    ; rbx = n
-    subtract register_ax, 1
+    move    base, accumulator    ; rbx = n
+    subtract accumulator, 1
     call_procedure factorial            ; rsp is 16-byte aligned here
-    multiply register_bx                ; rdx:rax = rax * rbx (rbx = n)
-    pop_from_stack register_dx
-    pop_from_stack register_bx
-    move    register_rsp, register_bp
-    pop_from_stack register_bp
+    multiply base                ; rdx:rax = rax * rbx (rbx = n)
+    pop_from_stack data
+    pop_from_stack base
+    move    stack_pointer, base_pointer
+    pop_from_stack base_pointer
     return_from_procedure
 
 factorial_base:
-    move    register_ax, 1
-    pop_from_stack register_dx
-    pop_from_stack register_bx
-    move    register_rsp, register_bp
-    pop_from_stack register_bp
+    move    accumulator, 1
+    pop_from_stack data
+    pop_from_stack base
+    move    stack_pointer, base_pointer
+    pop_from_stack base_pointer
     return_from_procedure
 
 ; ============================================================================
 ; square(rdi) -> rax  (uses movzx, imul-style macros, stack locals)
 ; ============================================================================
 square:
-    push_onto_stack register_bp
-    move    register_bp, register_rsp
+    push_onto_stack base_pointer
+    move    base_pointer, stack_pointer
     ; rax = rdi * rdi
-    move    register_ax, register_di
-    signed_multiply register_ax         ; imul rax (implicit rax)
-    move    register_rsp, register_bp
-    pop_from_stack register_bp
+    move    accumulator, destination_index
+    signed_multiply accumulator         ; imul rax (implicit rax)
+    move    stack_pointer, base_pointer
+    pop_from_stack base_pointer
     return_from_procedure

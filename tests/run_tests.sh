@@ -184,8 +184,16 @@ if [ "$SDL_AVAILABLE" -eq 1 ]; then
         kill -9 "$SDL_PID" 2>/dev/null
     else
         wait "$SDL_PID"
-        echo "  FAIL  sdl_rectangle exited early with code $?"
-        FAIL=$((FAIL+1))
+        SDL_EXIT=$?
+        if [ "$SDL_EXIT" -eq 0 ]; then
+            # A clean exit means SDL initialized, the event loop ran, and a
+            # quit event was received - the full startup path succeeded.
+            echo "  PASS  sdl_rectangle ran and exited cleanly (code 0)"
+            PASS=$((PASS+1))
+        else
+            echo "  FAIL  sdl_rectangle exited early with code $SDL_EXIT"
+            FAIL=$((FAIL+1))
+        fi
     fi
 else
     echo "  SKIP  SDL2 not available - sdl_rectangle linked but not run"

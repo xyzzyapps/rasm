@@ -1,6 +1,9 @@
 ; ============================================================================
 ; 10-jumps.nasm - Control Flow Jump Instructions
 ; ============================================================================
+; Naming: jump target, jump_if_equal/jump_if_not_equal,
+;   jump_if_greater (jg), jump_if_less_or_equal (jle), jump_if_above (ja), ...
+; Unsigned comparisons use above/below; signed use greater/less.
 
 %macro jump 1
     jmp %1
