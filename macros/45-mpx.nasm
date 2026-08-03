@@ -2,31 +2,31 @@
 ; SECTION 45: MPX (MEMORY PROTECTION EXTENSIONS) INSTRUCTIONS
 ; ============================================================================
 
-%macro mpx-make-bounds 2
+%macro mpx_make_bounds 2
     bndmk %1, %2
 %endmacro
 
-%macro mpx-check-lower-bound 2
+%macro mpx_check_lower_bound 2
     bndcl %1, %2
 %endmacro
 
-%macro mpx-check-upper-bound 2
+%macro mpx_check_upper_bound 2
     bndcu %1, %2
 %endmacro
 
-%macro mpx-check-upper-bound-cn 2
+%macro mpx_check_upper_bound_cn 2
     bndcn %1, %2
 %endmacro
 
-%macro mpx-move-bounds 2
+%macro mpx_move_bounds 2
     bndmov %1, %2
 %endmacro
 
-%macro mpx-load-extended-bounds 2
+%macro mpx_load_extended_bounds 2
     bndldx %1, %2
 %endmacro
 
-%macro mpx-store-extended-bounds 2
+%macro mpx_store_extended_bounds 2
     bndstx %1, %2
 %endmacro
 

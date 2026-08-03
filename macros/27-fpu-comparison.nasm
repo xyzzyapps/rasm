@@ -2,7 +2,7 @@
 ; SECTION 27: X87 FPU - COMPARISON INSTRUCTIONS
 ; ============================================================================
 
-%macro fpu-compare 0-1
+%macro fpu_compare 0-1
 %if %0 = 0
     fcom
 %else
@@ -10,7 +10,7 @@
 %endif
 %endmacro
 
-%macro fpu-compare-and-pop 0-1
+%macro fpu_compare_and_pop 0-1
 %if %0 = 0
     fcomp
 %else
@@ -18,11 +18,11 @@
 %endif
 %endmacro
 
-%macro fpu-compare-and-pop-twice 0
+%macro fpu_compare_and_pop_twice 0
     fcompp
 %endmacro
 
-%macro fpu-compare-and-set-flags 0-1
+%macro fpu_compare_and_set_flags 0-1
 %if %0 = 0
     fcomi
 %else
@@ -30,7 +30,7 @@
 %endif
 %endmacro
 
-%macro fpu-compare-set-flags-and-pop 0-1
+%macro fpu_compare_set_flags_and_pop 0-1
 %if %0 = 0
     fcomip
 %else
@@ -38,7 +38,7 @@
 %endif
 %endmacro
 
-%macro fpu-unordered-compare 0-1
+%macro fpu_unordered_compare 0-1
 %if %0 = 0
     fucom
 %else
@@ -46,7 +46,7 @@
 %endif
 %endmacro
 
-%macro fpu-unordered-compare-and-pop 0-1
+%macro fpu_unordered_compare_and_pop 0-1
 %if %0 = 0
     fucomp
 %else
@@ -54,11 +54,11 @@
 %endif
 %endmacro
 
-%macro fpu-unordered-compare-and-pop-twice 0
+%macro fpu_unordered_compare_and_pop_twice 0
     fucompp
 %endmacro
 
-%macro fpu-unordered-compare-and-set-flags 0-1
+%macro fpu_unordered_compare_and_set_flags 0-1
 %if %0 = 0
     fucomi
 %else
@@ -66,7 +66,7 @@
 %endif
 %endmacro
 
-%macro fpu-unordered-compare-set-flags-and-pop 0-1
+%macro fpu_unordered_compare_set_flags_and_pop 0-1
 %if %0 = 0
     fucomip
 %else
@@ -74,19 +74,19 @@
 %endif
 %endmacro
 
-%macro fpu-compare-integer 1
+%macro fpu_compare_integer 1
     ficom %1
 %endmacro
 
-%macro fpu-compare-integer-and-pop 1
+%macro fpu_compare_integer_and_pop 1
     ficomp %1
 %endmacro
 
-%macro fpu-test 0
+%macro fpu_test 0
     ftst
 %endmacro
 
-%macro fpu-examine 0
+%macro fpu_examine 0
     fxam
 %endmacro
 

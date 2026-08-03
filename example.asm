@@ -12,7 +12,7 @@ section .data
     number      dq  42
     result      dq  0
     array       dq  1, 2, 3, 4, 5
-    array-len   equ 5
+    array_len   equ 5
 
 section .bss
     buffer      resb 256
@@ -22,121 +22,120 @@ section .text
 
 _start:
     ; --- Data Movement Examples ---
-    move    register-ax, 10              ; mov rax, 10
-    move    register-bx, register-ax     ; mov rbx, rax
-    move    register-cx, [number]        ; mov rcx, [number]
+    move    register_ax, 10              ; mov rax, 10
+    move    register_bx, register_ax     ; mov rbx, rax
+    move    register_cx, [number]        ; mov rcx, [number]
 
     ; --- Arithmetic Examples ---
-    add     register-ax, 5               ; add rax, 5
-    subtract register-bx, 3              ; sub rbx, 3
-    increment register-cx                ; inc rcx
-    decrement register-dx                ; dec rdx
-    multiply register-r8                 ; mul r8
-    compare register-ax, register-bx     ; cmp rax, rbx
+    add     register_ax, 5               ; add rax, 5
+    subtract register_bx, 3              ; sub rbx, 3
+    increment register_cx                ; inc rcx
+    decrement register_dx                ; dec rdx
+    multiply register_r8                 ; mul r8
+    compare register_ax, register_bx     ; cmp rax, rbx
 
     ; --- Logic Examples ---
-    logical-and register-ax, 0xFF        ; and rax, 0xFF
-    logical-or  register-bx, 0x0F        ; or rbx, 0x0F
-    logical-xor register-cx, register-dx ; xor rcx, rdx
-    logical-not register-ax              ; not rax
+    logical_and register_ax, 0xFF        ; and rax, 0xFF
+    logical_or  register_bx, 0x0F        ; or rbx, 0x0F
+    logical_xor register_cx, register_dx ; xor rcx, rdx
+    logical_not register_ax              ; not rax
 
     ; --- Shift Examples ---
-    shift-logical-left  register-ax, 2   ; shl rax, 2
-    shift-logical-right register-bx, 1   ; shr rbx, 1
-    shift-arithmetic-right register-cx, 3 ; sar rcx, 3
-    rotate-left  register-dx, 4          ; rol rdx, 4
-    rotate-right register-r8, 2          ; ror r8, 2
+    shift_logical_left  register_ax, 2   ; shl rax, 2
+    shift_logical_right register_bx, 1   ; shr rbx, 1
+    shift_arithmetic_right register_cx, 3 ; sar rcx, 3
+    rotate_left  register_dx, 4          ; rol rdx, 4
+    rotate_right register_r8, 2          ; ror r8, 2
 
     ; --- Control Flow Examples ---
-    compare register-ax, 10
-    jump-if-equal     is_ten
-    jump-if-greater   greater_than_ten
+    compare register_ax, 10
+    jump_if_equal     is_ten
+    jump_if_greater   greater_than_ten
     jump              done
 
 is_ten:
-    move register-r9, 1
+    move register_r9, 1
     jump done
 
 greater_than_ten:
-    move register-r9, 2
+    move register_r9, 2
 
 done:
     ; --- Stack Operations ---
-    push-onto-stack register-ax          ; push rax
-    push-onto-stack register-bx          ; push rbx
-    pop-from-stack  register-cx          ; pop rcx
-    pop-from-stack  register-dx          ; pop rdx
+    push_onto_stack register_ax          ; push rax
+    push_onto_stack register_bx          ; push rbx
+    pop_from_stack  register_cx          ; pop rcx
+    pop_from_stack  register_dx          ; pop rdx
 
     ; --- Flag Operations ---
-    clear-carry-flag                     ; clc
-    set-carry-flag                       ; stc
-    clear-direction-flag                 ; cld
-    set-interrupt-flag                   ; sti
-    clear-interrupt-flag                 ; cli
+    clear_carry_flag                     ; clc
+    set_carry_flag                       ; stc
+    clear_direction_flag                 ; cld
+    set_interrupt_flag                   ; sti
+    clear_interrupt_flag                 ; cli
 
     ; --- Bit Manipulation ---
-    bit-scan-forward register-ax, register-bx  ; bsf rax, rbx
-    bit-scan-reverse register-cx, register-dx  ; bsr rcx, rdx
-    byte-swap      register-r8                  ; bswap r8
+    bit_scan_forward register_ax, register_bx  ; bsf rax, rbx
+    bit_scan_reverse register_cx, register_dx  ; bsr rcx, rdx
+    byte_swap      register_r8                  ; bswap r8
 
     ; --- Load Effective Address ---
-    load-effective-address register-ax, [greeting]  ; lea rax, [greeting]
+    load_effective_address register_ax, [greeting]  ; lea rax, [greeting]
 
     ; --- Conditional Move ---
-    compare register-ax, register-bx
-    move-if-equal register-cx, register-dx  ; cmove rcx, rdx
+    compare register_ax, register_bx
+    move_if_equal register_cx, register_dx  ; cmove rcx, rdx
 
     ; --- Compare and Exchange ---
-    compare-and-exchange register-ax, register-bx  ; cmpxchg rax, rbx
+    compare_and_exchange register_ax, register_bx  ; cmpxchg rax, rbx
 
     ; --- System ---
-    no-operation                               ; nop
+    no_operation                               ; nop
     pause                                      ; pause
 
     ; --- Procedure Call ---
-    call-procedure my_function                 ; call my_function
+    call_procedure my_function                 ; call my_function
 
     ; --- Exit (Linux syscall) ---
-    move    register-ax, 60              ; mov rax, 60 (sys_exit)
-    move    register-di, 0               ; mov rdi, 0 (exit code)
-    syscall-invoke                       ; syscall
+    move    register_ax, 60              ; mov rax, 60 (sys_exit)
+    move    register_di, 0               ; mov rdi, 0 (exit code)
+    syscall_invoke                       ; syscall
 
 ; ============================================================================
 ; Function Example
 ; ============================================================================
 my_function:
     ; Prologue
-    push-onto-stack register-bp          ; push rbp
-    move    register-bp, register-sp     ; mov rbp, rsp
+    push_onto_stack register_bp          ; push rbp
+    move    register_bp, register_sp     ; mov rbp, rsp
 
     ; Body: add two values
-    move    register-ax, [register-bp + 16]  ; mov rax, [rbp+16]
-    add     register-ax, [register-bp + 24]  ; add rax, [rbp+24]
+    move    register_ax, [register_bp + 16]  ; mov rax, [rbp+16]
+    add     register_ax, [register_bp + 24]  ; add rax, [rbp+24]
 
     ; Epilogue
-    move    register-sp, register-bp     ; mov rsp, rbp
-    pop-from-stack  register-bp          ; pop rbp
-    return-from-procedure                ; ret
+    move    register_sp, register_bp     ; mov rsp, rbp
+    pop_from_stack  register_bp          ; pop rbp
+    return_from_procedure                ; ret
 
 ; ============================================================================
 ; Loop Example
 ; ============================================================================
 loop_example:
-    move    register-cx, 10              ; mov rcx, 10
+    move    register_cx, 10              ; mov rcx, 10
 .loop:
     ; do something
-    decrement register-cx                ; dec rcx
-    loop-if-not-zero .loop               ; loopnz .loop
-    return-from-procedure                ; ret
+    decrement register_cx                ; dec rcx
+    loop_if_not_zero .loop               ; loopnz .loop
+    return_from_procedure                ; ret
 
 ; ============================================================================
 ; String Operations Example
 ; ============================================================================
 string_copy:
-    load-effective-address register-si, [greeting]  ; lea rsi, [greeting]
-    load-effective-address register-di, [buffer]    ; lea rdi, [buffer]
-    move    register-cx, 25              ; mov rcx, 25
-    clear-direction-flag                          ; cld
-    repeat                                        ; rep
-    move-string-byte                              ; movsb
-    return-from-procedure                         ; ret
+    load_effective_address register_si, [greeting]  ; lea rsi, [greeting]
+    load_effective_address register_di, [buffer]    ; lea rdi, [buffer]
+    move    register_cx, 25              ; mov rcx, 25
+    clear_direction_flag                          ; cld
+    repeat movsb                                ; rep movsb
+    return_from_procedure                         ; ret

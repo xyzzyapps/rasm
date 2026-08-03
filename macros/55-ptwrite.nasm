@@ -2,7 +2,7 @@
 ; SECTION 55: PTWRITE INSTRUCTION
 ; ============================================================================
 
-%macro pt-write 1
+%macro pt_write 1
     ptwrite %1
 %endmacro
 

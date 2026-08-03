@@ -3,83 +3,83 @@
 ; ============================================================================
 ; Merged from sections 28 and 48
 
-%macro fpu-load-control-word 1
+%macro fpu_load_control_word 1
     fldcw %1
 %endmacro
 
-%macro fpu-store-control-word 1
+%macro fpu_store_control_word 1
     fstcw %1
 %endmacro
 
-%macro fpu-store-control-word-no-wait 1
+%macro fpu_store_control_word_no_wait 1
     fnstcw %1
 %endmacro
 
-%macro fpu-load-environment 1
+%macro fpu_load_environment 1
     fldenv %1
 %endmacro
 
-%macro fpu-store-environment 1
+%macro fpu_store_environment 1
     fstenv %1
 %endmacro
 
-%macro fpu-store-environment-no-wait 1
+%macro fpu_store_environment_no_wait 1
     fnstenv %1
 %endmacro
 
-%macro fpu-store-status-word 1
+%macro fpu_store_status_word 1
     fstsw %1
 %endmacro
 
-%macro fpu-store-status-word-no-wait 1
+%macro fpu_store_status_word_no_wait 1
     fnstsw %1
 %endmacro
 
-%macro fpu-store-status-word-to-ax 0
+%macro fpu_store_status_word_to_ax 0
     fstsw ax
 %endmacro
 
-%macro fpu-store-status-word-to-ax-no-wait 0
+%macro fpu_store_status_word_to_ax_no_wait 0
     fnstsw ax
 %endmacro
 
-%macro fpu-save-state 1
+%macro fpu_save_state 1
     fsave %1
 %endmacro
 
-%macro fpu-save-state-no-wait 1
+%macro fpu_save_state_no_wait 1
     fnsave %1
 %endmacro
 
-%macro fpu-restore-state 1
+%macro fpu_restore_state 1
     frstor %1
 %endmacro
 
-%macro fpu-initialize 0
+%macro fpu_initialize 0
     finit
 %endmacro
 
-%macro fpu-initialize-no-wait 0
+%macro fpu_initialize_no_wait 0
     fninit
 %endmacro
 
-%macro fpu-clear-exceptions 0
+%macro fpu_clear_exceptions 0
     fclex
 %endmacro
 
-%macro fpu-clear-exceptions-no-wait 0
+%macro fpu_clear_exceptions_no_wait 0
     fnclex
 %endmacro
 
-%macro fpu-wait 0
+%macro fpu_wait 0
     fwait
 %endmacro
 
-%macro fpu-no-operation 0
+%macro fpu_no_operation 0
     fnop
 %endmacro
 
-%macro fpu-free-register 0-1
+%macro fpu_free_register 0-1
 %if %0 = 1
     ffree %1
 %else
@@ -87,26 +87,26 @@
 %endif
 %endmacro
 
-%macro fpu-decrement-stack-pointer 0
+%macro fpu_decrement_stack_pointer 0
     fdecstp
 %endmacro
 
-%macro fpu-increment-stack-pointer 0
+%macro fpu_increment_stack_pointer 0
     fincstp
 %endmacro
 
-%macro fpu-extract-exponent-and-significand 0
+%macro fpu_extract_exponent_and_significand 0
     fxtract
 %endmacro
 
-%macro fpu-load-mxcsr 1
+%macro fpu_load_mxcsr 1
     ldmxcsr %1
 %endmacro
 
-%macro fpu-store-mxcsr 1
+%macro fpu_store_mxcsr 1
     stmxcsr %1
 %endmacro
 
-%macro mmx-empty 0
+%macro mmx_empty 0
     emms
 %endmacro

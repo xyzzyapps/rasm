@@ -2,7 +2,7 @@
 ; SECTION 38: PCLMULQDQ INSTRUCTION
 ; ============================================================================
 
-%macro carry-less-multiply-quadword 3
+%macro carry_less_multiply_quadword 3
     pclmulqdq %1, %2, %3
 %endmacro
 

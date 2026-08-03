@@ -2,11 +2,11 @@
 ; 03-sizes.nasm - Operand Size Specifiers
 ; ============================================================================
 
-%define size-byte           byte
-%define size-word           word
-%define size-dword          dword
-%define size-qword          qword
-%define size-tword          tword
-%define size-oword          oword
-%define size-yword          yword
-%define size-zword          zword
+%define size_byte           byte
+%define size_word           word
+%define size_dword          dword
+%define size_qword          qword
+%define size_tword          tword
+%define size_oword          oword
+%define size_yword          yword
+%define size_zword          zword

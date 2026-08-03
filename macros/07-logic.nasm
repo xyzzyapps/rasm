@@ -2,23 +2,23 @@
 ; 07-logic.nasm - Logic Instructions
 ; ============================================================================
 
-%macro logical-and 2
+%macro logical_and 2
     and %1, %2
 %endmacro
 
-%macro logical-and-not 2
+%macro logical_and_not 2
     andn %1, %2
 %endmacro
 
-%macro logical-or 2
+%macro logical_or 2
     or %1, %2
 %endmacro
 
-%macro logical-xor 2
+%macro logical_xor 2
     xor %1, %2
 %endmacro
 
-%macro logical-not 1
+%macro logical_not 1
     not %1
 %endmacro
 

@@ -2,19 +2,19 @@
 ; SECTION 54: USER INTERRUPT INSTRUCTIONS
 ; ============================================================================
 
-%macro send-user-interrupt 2
+%macro send_user_interrupt 2
     senduipi %1, %2
 %endmacro
 
-%macro user-interrupt-return 0
+%macro user_interrupt_return 0
     uiret
 %endmacro
 
-%macro set-user-interrupt-request 1
+%macro set_user_interrupt_request 1
     stui %1
 %endmacro
 
-%macro clear-user-interrupt-request 0
+%macro clear_user_interrupt_request 0
     clui
 %endmacro
 

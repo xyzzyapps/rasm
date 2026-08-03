@@ -2,7 +2,7 @@
 ; SECTION 49: BOUND INSTRUCTION
 ; ============================================================================
 
-%macro check-bounds 2
+%macro check_bounds 2
     bound %1, %2
 %endmacro
 

@@ -6,15 +6,15 @@
     add %1, %2
 %endmacro
 
-%macro add-with-carry 2
+%macro add_with_carry 2
     adc %1, %2
 %endmacro
 
-%macro add-with-carry-flag 2
+%macro add_with_carry_flag 2
     adcx %1, %2
 %endmacro
 
-%macro add-with-overflow-flag 2
+%macro add_with_overflow_flag 2
     adox %1, %2
 %endmacro
 
@@ -22,7 +22,7 @@
     sub %1, %2
 %endmacro
 
-%macro subtract-with-borrow 2
+%macro subtract_with_borrow 2
     sbb %1, %2
 %endmacro
 
@@ -38,19 +38,19 @@
     mul %1
 %endmacro
 
-%macro signed-multiply 1
+%macro signed_multiply 1
     imul %1
 %endmacro
 
-%macro signed-multiply-immediate 2
+%macro signed_multiply_immediate 2
     imul %1, %2
 %endmacro
 
-%macro signed-multiply-immediate-3 3
+%macro signed_multiply_immediate_3 3
     imul %1, %2, %3
 %endmacro
 
-%macro multiply-without-affecting-flags 3
+%macro multiply_without_affecting_flags 3
     mulx %1, %2, %3
 %endmacro
 
@@ -58,7 +58,7 @@
     div %1
 %endmacro
 
-%macro signed-divide 1
+%macro signed_divide 1
     idiv %1
 %endmacro
 
@@ -70,30 +70,30 @@
     cmp %1, %2
 %endmacro
 
-%macro ascii-adjust-after-add 0
+%macro ascii_adjust_after_add 0
     aaa
 %endmacro
 
-%macro ascii-adjust-before-div 0
+%macro ascii_adjust_before_div 0
     aad
 %endmacro
 
-%macro ascii-adjust-after-mul 0
+%macro ascii_adjust_after_mul 0
     aam
 %endmacro
 
-%macro ascii-adjust-after-sub 0
+%macro ascii_adjust_after_sub 0
     aas
 %endmacro
 
-%macro decimal-adjust-after-add 0
+%macro decimal_adjust_after_add 0
     daa
 %endmacro
 
-%macro decimal-adjust-after-sub 0
+%macro decimal_adjust_after_sub 0
     das
 %endmacro
 
-%macro compute-crc32 2
+%macro compute_crc32 2
     crc32 %1, %2
 %endmacro

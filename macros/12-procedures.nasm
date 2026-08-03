@@ -2,11 +2,11 @@
 ; 12-procedures.nasm - Procedure Calls
 ; ============================================================================
 
-%macro call-procedure 1
+%macro call_procedure 1
     call %1
 %endmacro
 
-%macro return-from-procedure 0-1
+%macro return_from_procedure 0-1
 %if %0 = 1
     ret %1
 %else
@@ -14,7 +14,7 @@
 %endif
 %endmacro
 
-%macro return-far 0-1
+%macro return_far 0-1
 %if %0 = 1
     retf %1
 %else

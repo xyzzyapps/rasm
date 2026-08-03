@@ -3,31 +3,31 @@
 ; ============================================================================
 
 ; Flag bit positions
-%define flag-carry          0
-%define flag-parity         2
-%define flag-adjust         4
-%define flag-zero           6
-%define flag-sign           7
-%define flag-trap           8
-%define flag-interrupt      9
-%define flag-direction      10
-%define flag-overflow       11
-%define flag-io-privilege   12
-%define flag-nested-task    14
-%define flag-resume         16
-%define flag-virtual-8086   17
-%define flag-alignment      18
-%define flag-virtual-interrupt 19
-%define flag-virtual-interrupt-pending 20
-%define flag-id             21
+%define flag_carry          0
+%define flag_parity         2
+%define flag_adjust         4
+%define flag_zero           6
+%define flag_sign           7
+%define flag_trap           8
+%define flag_interrupt      9
+%define flag_direction      10
+%define flag_overflow       11
+%define flag_io_privilege   12
+%define flag_nested_task    14
+%define flag_resume         16
+%define flag_virtual_8086   17
+%define flag_alignment      18
+%define flag_virtual_interrupt 19
+%define flag_virtual_interrupt_pending 20
+%define flag_id             21
 
 ; Flag symbolic names
-%define zero-flag           ZF
-%define carry-flag          CF
-%define sign-flag           SF
-%define overflow-flag       OF
-%define parity-flag         PF
-%define adjust-flag         AF
-%define direction-flag      DF
-%define interrupt-flag      IF
-%define trap-flag           TF
+%define zero_flag           ZF
+%define carry_flag          CF
+%define sign_flag           SF
+%define overflow_flag       OF
+%define parity_flag         PF
+%define adjust_flag         AF
+%define direction_flag      DF
+%define interrupt_flag      IF
+%define trap_flag           TF

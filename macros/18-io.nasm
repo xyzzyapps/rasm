@@ -2,35 +2,35 @@
 ; SECTION 18: I/O OPERATIONS
 ; ============================================================================
 
-%macro input-from-port 2
+%macro input_from_port 2
     in %1, %2
 %endmacro
 
-%macro output-to-port 2
+%macro output_to_port 2
     out %1, %2
 %endmacro
 
-%macro input-string-from-port-byte 0
+%macro input_string_from_port_byte 0
     insb
 %endmacro
 
-%macro input-string-from-port-word 0
+%macro input_string_from_port_word 0
     insw
 %endmacro
 
-%macro input-string-from-port-dword 0
+%macro input_string_from_port_dword 0
     insd
 %endmacro
 
-%macro output-string-to-port-byte 0
+%macro output_string_to_port_byte 0
     outsb
 %endmacro
 
-%macro output-string-to-port-word 0
+%macro output_string_to_port_word 0
     outsw
 %endmacro
 
-%macro output-string-to-port-dword 0
+%macro output_string_to_port_dword 0
     outsd
 %endmacro
 

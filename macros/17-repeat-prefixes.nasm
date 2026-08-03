@@ -6,19 +6,19 @@
     rep %1
 %endmacro
 
-%macro repeat-if-equal 1
+%macro repeat_if_equal 1
     repe %1
 %endmacro
 
-%macro repeat-if-zero 1
+%macro repeat_if_zero 1
     repz %1
 %endmacro
 
-%macro repeat-if-not-equal 1
+%macro repeat_if_not_equal 1
     repne %1
 %endmacro
 
-%macro repeat-if-not-zero 1
+%macro repeat_if_not_zero 1
     repnz %1
 %endmacro
 

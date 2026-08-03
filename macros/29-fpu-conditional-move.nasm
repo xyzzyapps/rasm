@@ -2,7 +2,7 @@
 ; SECTION 29: X87 FPU - CONDITIONAL MOVE INSTRUCTIONS
 ; ============================================================================
 
-%macro fpu-conditional-move-if-below 0-1
+%macro fpu_conditional_move_if_below 0-1
 %if %0 = 1
     fcmovb %1
 %else
@@ -10,7 +10,7 @@
 %endif
 %endmacro
 
-%macro fpu-conditional-move-if-below-or-equal 0-1
+%macro fpu_conditional_move_if_below_or_equal 0-1
 %if %0 = 1
     fcmovbe %1
 %else
@@ -18,7 +18,7 @@
 %endif
 %endmacro
 
-%macro fpu-conditional-move-if-equal 0-1
+%macro fpu_conditional_move_if_equal 0-1
 %if %0 = 1
     fcmove %1
 %else
@@ -26,7 +26,7 @@
 %endif
 %endmacro
 
-%macro fpu-conditional-move-if-not-below-or-equal 0-1
+%macro fpu_conditional_move_if_not_below_or_equal 0-1
 %if %0 = 1
     fcmovnbe %1
 %else
@@ -34,7 +34,7 @@
 %endif
 %endmacro
 
-%macro fpu-conditional-move-if-not-equal 0-1
+%macro fpu_conditional_move_if_not_equal 0-1
 %if %0 = 1
     fcmovne %1
 %else
@@ -42,7 +42,7 @@
 %endif
 %endmacro
 
-%macro fpu-conditional-move-if-not-overflow 0-1
+%macro fpu_conditional_move_if_not_overflow 0-1
 %if %0 = 1
     fcmovnu %1
 %else
@@ -50,7 +50,7 @@
 %endif
 %endmacro
 
-%macro fpu-conditional-move-if-overflow 0-1
+%macro fpu_conditional_move_if_overflow 0-1
 %if %0 = 1
     fcmovu %1
 %else

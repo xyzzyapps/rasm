@@ -2,11 +2,11 @@
 ; SECTION 22: FLAG TRANSFER
 ; ============================================================================
 
-%macro load-flags-into-ah 0
+%macro load_flags_into_ah 0
     lahf
 %endmacro
 
-%macro store-ah-into-flags 0
+%macro store_ah_into_flags 0
     sahf
 %endmacro
 

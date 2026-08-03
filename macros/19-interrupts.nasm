@@ -6,27 +6,27 @@
     int %1
 %endmacro
 
-%macro interrupt-3 0
+%macro interrupt_3 0
     int3
 %endmacro
 
-%macro interrupt-1 0
+%macro interrupt_1 0
     int1
 %endmacro
 
-%macro interrupt-on-overflow 0
+%macro interrupt_on_overflow 0
     into
 %endmacro
 
-%macro return-from-interrupt 0
+%macro return_from_interrupt 0
     iret
 %endmacro
 
-%macro return-from-interrupt-dword 0
+%macro return_from_interrupt_dword 0
     iretd
 %endmacro
 
-%macro return-from-interrupt-qword 0
+%macro return_from_interrupt_qword 0
     iretq
 %endmacro
 

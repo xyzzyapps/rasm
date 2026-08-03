@@ -2,11 +2,11 @@
 ; SECTION 36: SSE4.2 INSTRUCTIONS
 ; ============================================================================
 
-%macro sse42-crc32 2
+%macro sse42_crc32 2
     crc32 %1, %2
 %endmacro
 
-%macro sse42-populate-count 2
+%macro sse42_populate_count 2
     popcnt %1, %2
 %endmacro
 
