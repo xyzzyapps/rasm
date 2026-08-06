@@ -1,7 +1,7 @@
 ; ============================================================================
 ; READABLE MACROS - Complete x86-64 NASM Preprocessor Macros
 ; ============================================================================
-; Comprehensive English-hyphenated macro names for ALL x86-64 instructions.
+; Comprehensive English-underscore macro names for ALL x86-64 instructions.
 ; Covers 1000+ instruction mnemonics across all categories.
 ;
 ; Usage: %include "readable_macros.nasm"

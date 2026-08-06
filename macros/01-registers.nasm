@@ -1,8 +1,14 @@
 ; ============================================================================
 ; 01-registers.nasm - Register Definitions
 ; ============================================================================
-; NOTE: use the `register_*` aliases defined further below for readable code
-; (register_ax = rax, register_eax = eax, register_al = al, register_ax16 = ax).
+; Readable aliases for the traditional register names:
+;   accumulator = rax, base = rbx, counter = rcx, data = rdx,
+;   source_index = rsi, destination_index = rdi,
+;   base_pointer = rbp, stack_pointer = rsp.
+; Width variants: accumulator_64/32/16/8/8_high (rax/eax/ax/al/ah), and
+; register_r8..register_r15 for the extended registers.
+; Legacy `register_*` spellings (register_ax = rax, register_eax = eax, ...)
+; are also defined further below.
 ; Raw register names (rax, eax, ax, al, ...) always work as well.
 
 ; Segment Registers

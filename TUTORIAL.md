@@ -22,7 +22,7 @@ There is **zero runtime overhead**; the macros only exist while assembling.
 |---|---|
 | **NASM 2.14+** | The assembler. The macros are plain NASM preprocessor macros. |
 | **A linker** | Linux: `ld` (or `gcc`). Windows: MinGW-w64 `gcc`. |
-| **SDL2** *(optional)* | Only needed for the game demo (`sdl_rectangle.asm`). |
+| **SDL2** *(optional)* | Only needed for the game demo (`examples/sdl_rectangle.asm`). |
 
 **Install NASM**
 
@@ -305,29 +305,29 @@ factorial:
 
 ## 6. Example: the SDL2 game
 
-The repo ships a complete game, `sdl_rectangle.asm` — it opens an 800×600
-window, draws a cyan rectangle on a dark background, and moves it with the
-arrow keys.
+The repo ships a complete game, `examples/sdl_rectangle.asm` — it opens an
+800×600 window, draws a cyan rectangle on a dark background, and moves it with
+the arrow keys.
 
-**Linux:**
+**Linux** (from the repo root):
 
 ```bash
-nasm -f elf64 sdl_rectangle.asm -o sdl_rectangle.o
+nasm -f elf64 examples/sdl_rectangle.asm -o sdl_rectangle.o
 gcc sdl_rectangle.o -o sdl_rectangle -lSDL2 -no-pie
 ./sdl_rectangle
 ```
 
-**Windows (MinGW):**
+**Windows (MinGW)** (from the repo root):
 
 ```bash
-nasm -f win64 sdl_rectangle.asm -o sdl_rectangle.o
+nasm -f win64 examples/sdl_rectangle.asm -o sdl_rectangle.o
 gcc sdl_rectangle.o -o sdl_rectangle.exe -lSDL2
 sdl_rectangle.exe
 ```
 
 Close it by pressing **Escape** or the window's close button.
 
-Reading `sdl_rectangle.asm` is a great way to see the macros in a real
+Reading `examples/sdl_rectangle.asm` is a great way to see the macros in a real
 program: it uses `call_procedure` for every SDL function, `compare` +
 `jump_if_equal` for event handling, and `add_dword`/`subtract_dword` on
 memory for moving the rectangle.
@@ -403,8 +403,8 @@ underlying mnemonic too.
    Windows x64 program so data references are RIP-relative.
 6. **Windows x64 calling convention.** Arguments go in `rcx, rdx, r8, r9`
    (then the stack), you must reserve 32 bytes of shadow space, and `rsp`
-   must be 16-byte aligned at every `call`. The `sdl_rectangle.asm` file
-   shows the pattern.
+   must be 16-byte aligned at every `call`. The `examples/sdl_rectangle.asm`
+   file shows the pattern.
 7. **Register words are macro names.** `accumulator`, `base`, `counter`,
    `data`, `source_index`, `destination_index`, `base_pointer`, and
    `stack_pointer` are preprocessor aliases — avoid using them as labels
@@ -418,20 +418,24 @@ underlying mnemonic too.
 bash tests/run_tests.sh
 ```
 
-The suite checks that every macro file assembles, both `example.asm` and
-`sdl_rectangle.asm` build for Linux and Windows, the runtime smoke test
-(`tests/smoke_test.asm`) executes real code through the macros and verifies
-the results, and the SDL demo launches without crashing.
+The suite checks that every macro file assembles, both `examples/example.asm`
+and `examples/sdl_rectangle.asm` build for Linux and Windows, the runtime
+smoke test (`tests/smoke_test.asm`) executes real code through the macros and
+verifies the results, and the SDL demo launches without crashing.
 
 ---
 
 ## 10. Where to go next
 
-- **`example.asm`** — a tour of the most common macros with `; real
+- **`examples/example.asm`** — a tour of the most common macros with `; real
   instruction` comments on every line.
-- **`sdl_rectangle.asm`** — a complete interactive program.
+- **`examples/fibonacci.asm`** / **`examples/fibonacci_raw.asm`** — the same
+  program written with and without readable macros, side by side.
+- **`examples/sdl_rectangle.asm`** — a complete interactive program.
 - **`tests/smoke_test.asm`** — readable macros in runtime-verified code
   (recursion, condition codes, sized memory operations).
 - **`README.md`** — full macro categories and the cheat sheet.
+- **`tools/readablify/`** — a Go tool that converts raw NASM source into
+  readable macros and verifies the machine code is unchanged.
 
 Happy assembling!

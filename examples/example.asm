@@ -2,7 +2,10 @@
 ; Readable Assembly - Example Usage
 ; ============================================================================
 ; This file demonstrates how to use the readable assembly macros.
-; Assemble with: nasm -f elf64 example.asm -o example.o
+;
+; Assemble from the repo root (so "%include readable_macros.nasm" resolves):
+;   nasm -f elf64 examples/example.asm -o example.o
+;   ld example.o -o example
 ; ============================================================================
 
 %include "readable_macros.nasm"

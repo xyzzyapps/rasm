@@ -4,12 +4,12 @@
 ; A simple game that draws a colored rectangle on screen and moves it with
 ; arrow keys. Demonstrates SDL integration with readable assembly macros.
 ;
-; Build (Linux):
-;   nasm -f elf64 sdl_rectangle.asm -o sdl_rectangle.o
+; Build (Linux, from the repo root):
+;   nasm -f elf64 examples/sdl_rectangle.asm -o sdl_rectangle.o
 ;   gcc sdl_rectangle.o -o sdl_rectangle -lSDL2 -no-pie
 ;
-; Build (Windows with MinGW):
-;   nasm -f win64 sdl_rectangle.asm -o sdl_rectangle.o
+; Build (Windows with MinGW, from the repo root):
+;   nasm -f win64 examples/sdl_rectangle.asm -o sdl_rectangle.o
 ;   gcc sdl_rectangle.o -o sdl_rectangle.exe -lSDL2
 ; ============================================================================
 

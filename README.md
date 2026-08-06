@@ -95,10 +95,11 @@ done:
     syscall_invoke
 ```
 
-Assemble with NASM:
+Assemble with NASM (from the repo root, so `%include "readable_macros.nasm"`
+resolves):
 
 ```bash
-nasm -f elf64 example.asm -o example.o
+nasm -f elf64 examples/example.asm -o example.o
 ld example.o -o example
 ```
 
@@ -123,8 +124,18 @@ readable_assembly/
 │   ├── 13-stack.nasm         # push_onto_stack, pop_from_stack
 │   ├── ...
 │   └── 60-cet-shadow-stack.nasm
-├── example.asm               # Basic usage examples
-└── sdl_rectangle.asm         # SDL2 game demo
+├── examples/
+│   ├── example.asm           # Basic usage examples
+│   ├── fibonacci.asm         # Fibonacci with readable macros
+│   ├── fibonacci_raw.asm     # Same program, raw NASM (for comparison)
+│   └── sdl_rectangle.asm     # SDL2 game demo
+├── tests/
+│   ├── run_tests.sh          # Test suite
+│   └── smoke_test.asm        # Runtime-verified macro smoke test
+└── tools/
+    └── readablify/           # Go tool: raw NASM -> readable macros
+        ├── main.go
+        └── README.md
 ```
 
 ## Macro Categories
@@ -132,7 +143,7 @@ readable_assembly/
 | Category | File | Examples |
 |---|---|---|
 | Registers | `01-registers.nasm` | `accumulator`, `base`, `counter`, `register_r8` |
-| Data Movement | `05-data-movement.nasm` | `move`, `load-effective-address` |
+| Data Movement | `05-data-movement.nasm` | `move`, `load_effective_address` |
 | Arithmetic | `06-arithmetic.nasm` | `add`, `subtract`, `increment`, `multiply` |
 | Logic | `07-logic.nasm` | `logical_and`, `logical_or`, `logical_xor` |
 | Shift/Rotate | `08-shift-rotate.nasm` | `shift_logical_left`, `rotate_right` |
@@ -145,21 +156,35 @@ readable_assembly/
 
 ## SDL2 Example
 
-The project includes a complete SDL2 game (`sdl_rectangle.asm`) that draws a colored rectangle and moves it with arrow keys.
+The project includes a complete SDL2 game (`examples/sdl_rectangle.asm`) that draws a colored rectangle and moves it with arrow keys.
 
 **Linux:**
 ```bash
-nasm -f elf64 sdl_rectangle.asm -o sdl_rectangle.o
+nasm -f elf64 examples/sdl_rectangle.asm -o sdl_rectangle.o
 gcc sdl_rectangle.o -o sdl_rectangle -lSDL2 -no-pie
 ./sdl_rectangle
 ```
 
 **Windows (MinGW):**
 ```bash
-nasm -f win64 sdl_rectangle.asm -o sdl_rectangle.o
+nasm -f win64 examples/sdl_rectangle.asm -o sdl_rectangle.o
 gcc sdl_rectangle.o -o sdl_rectangle.exe -lSDL2
 sdl_rectangle.exe
 ```
+
+## readablify tool
+
+`tools/readablify/` is a Go tool that converts raw NASM source into readable
+assembly. It rewrites mnemonics, registers, sized forms and data directives,
+then verifies the result is byte-identical machine code:
+
+```bash
+cd tools/readablify
+go build -o readablify .
+./readablify -verify examples/fibonacci_raw.asm
+```
+
+See [tools/readablify/README.md](tools/readablify/README.md) for full usage.
 
 ## Testing
 
@@ -172,8 +197,8 @@ bash tests/run_tests.sh
 The suite verifies that:
 
 1. Every macro file in `macros/` assembles standalone
-2. `example.asm` assembles for both `elf64` (Linux) and `win64` (Windows)
-3. `sdl_rectangle.asm` assembles for both formats
+2. `examples/example.asm` assembles for both `elf64` (Linux) and `win64` (Windows)
+3. `examples/sdl_rectangle.asm` assembles for both formats
 4. `tests/smoke_test.asm` compiles, links and **runs** — exercising arithmetic,
    logic, shifts, stack ops, procedures and recursion via the readable macros
    (exits 0 only if every runtime check passes)

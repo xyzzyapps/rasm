@@ -4,8 +4,8 @@
 # ============================================================================
 # Verifies that:
 #   1. Every macro file assembles standalone (syntax check)
-#   2. example.asm assembles for both win64 and elf64
-#   3. sdl_rectangle.asm assembles for both win64 and elf64
+#   2. examples/example.asm assembles for both win64 and elf64
+#   3. examples/sdl_rectangle.asm assembles for both win64 and elf64
 #   4. The runtime smoke test compiles, links and passes
 #   5. The SDL demo links against SDL2 and runs without crashing
 #
@@ -90,18 +90,18 @@ for f in "$ROOT"/macros/*.nasm; do
 done
 
 # ---------------------------------------------------------------------------
-# 2. example.asm
+# 2. examples/example.asm
 # ---------------------------------------------------------------------------
-echo "--- example.asm ---"
-check "example.asm (elf64)"  assemble elf64 "$ROOT/example.asm" "$BUILD/example_linux.o"
-check "example.asm (win64)"  assemble win64 "$ROOT/example.asm" "$BUILD/example_win.o"
+echo "--- examples/example.asm ---"
+check "examples/example.asm (elf64)" assemble elf64 "$ROOT/examples/example.asm" "$BUILD/example_linux.o"
+check "examples/example.asm (win64)" assemble win64 "$ROOT/examples/example.asm" "$BUILD/example_win.o"
 
 # ---------------------------------------------------------------------------
-# 3. sdl_rectangle.asm
+# 3. examples/sdl_rectangle.asm
 # ---------------------------------------------------------------------------
-echo "--- sdl_rectangle.asm ---"
-check "sdl_rectangle.asm (elf64)" assemble elf64 "$ROOT/sdl_rectangle.asm" "$BUILD/sdl_linux.o"
-check "sdl_rectangle.asm (win64)" assemble win64 "$ROOT/sdl_rectangle.asm" "$BUILD/sdl_win.o"
+echo "--- examples/sdl_rectangle.asm ---"
+check "examples/sdl_rectangle.asm (elf64)" assemble elf64 "$ROOT/examples/sdl_rectangle.asm" "$BUILD/sdl_linux.o"
+check "examples/sdl_rectangle.asm (win64)" assemble win64 "$ROOT/examples/sdl_rectangle.asm" "$BUILD/sdl_win.o"
 
 # ---------------------------------------------------------------------------
 # 4. Runtime smoke test
