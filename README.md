@@ -1,4 +1,4 @@
-# Readable Assembly
+# Readable Assembly (rasm)
 
 English-underscore NASM macros that make x86-64 assembly code readable and self-documenting.
 
@@ -213,3 +213,10 @@ The suite verifies that:
 ## License
 
 MIT
+
+## Credits
+
+This project was developed with assistance from AI models:
+
+- **Qwen 3.6**
+- **DeepSeek**

@@ -1,9 +1,9 @@
-# Readable Assembly — Software Requirements Specification
+# Readable Assembly (rasm) — Software Requirements Specification
 
-This document is the SRS for the **Readable Assembly** project: a set of NASM
-preprocessor macros that give every x86-64 instruction mnemonic an
-English-descriptive alias, plus a companion conversion tool (`readablify`)
-and a test suite.
+This document is the SRS for the **Readable Assembly** project (also known as
+**rasm**): a set of NASM preprocessor macros that give every x86-64
+instruction mnemonic an English-descriptive alias, plus a companion
+conversion tool (`readablify`) and a test suite.
 
 ## 1. Purpose and Scope
 

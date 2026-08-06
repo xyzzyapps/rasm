@@ -1,8 +1,8 @@
-# Readable Assembly — Tutorial
+# Readable Assembly (rasm) — Tutorial
 
 Welcome! This tutorial teaches you to write x86-64 assembly using **Readable
-Assembly**, a set of NASM macros that replace cryptic instruction mnemonics
-with descriptive English names.
+Assembly** (a.k.a. **rasm**), a set of NASM macros that replace cryptic
+instruction mnemonics with descriptive English names.
 
 ```nasm
 move accumulator, 10        ; instead of: mov rax, 10
