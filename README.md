@@ -212,7 +212,8 @@ The suite verifies that:
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE). Copyright (c) 2026 Xyzzy Apps
+&lt;xyzzyapps@gmail.com&gt;.
 
 ## Credits
 
