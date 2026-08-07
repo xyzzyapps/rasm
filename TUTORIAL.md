@@ -303,6 +303,61 @@ factorial:
 
 ---
 
+## 5.5 Example: C-like structs
+
+Tired of hand-computing offsets like `[rax + 40]`? Define a struct once and
+let the macros do the arithmetic:
+
+```nasm
+%include "readable_macros.nasm"
+
+; point { int x; int y; }  ->  point_size = 8
+begin_struct point
+    struct_dword field_x
+    struct_dword field_y
+end_struct
+
+; rect { point topleft; point bottomright; char name[32]; }
+begin_struct rect
+    struct_nested field_topleft,     point
+    struct_nested field_bottomright, point
+    struct_byte   field_name, 32
+end_struct
+
+section .bss
+    rect_storage: reserve_byte rect_size        ; "rect my_rect;"
+
+section .text
+    global _start
+_start:
+    load_effective_address base, [rect_storage] ; "rect *p = &my_rect;"
+
+    ; Write fields by name - the offsets resolve at assemble time:
+    move_dword [base + rect.field_topleft + point.field_x], 10
+    move_dword [base + rect.field_bottomright + point.field_y], 20
+    move_byte  [base + rect.field_name], 'H'
+
+    ; ... exit ...
+```
+
+`begin_struct` / `end_struct` wrap the field declarations, `struct_dword`
+etc. declare members (all accept an optional repeat count), and
+`struct_nested` embeds another struct. Every struct publishes a
+`Type_size` constant for `reserve_byte`. Access any field with
+`struct.field`, and chain nested fields with `+`.
+
+The numeric size constants (`byte_size`, `word_size`, `dword_size`,
+`qword_size`, ...) make plain offsets self-documenting too:
+
+```nasm
+move accumulator_32, [base + dword_size]    ; instead of [base + 4]
+```
+
+See `examples/structs.asm` for a complete runnable demo that verifies every
+offset at runtime.
+
+---
+
 ## 6. Example: the SDL2 game
 
 The repo ships a complete game, `examples/sdl_rectangle.asm` — it opens an
@@ -372,6 +427,7 @@ Every category is a separate file in `macros/`:
 | FPU | `23-29-fpu-*.nasm` | `fpu_add`, `fpu_sine`, `fpu_square_root` |
 | SSE/AVX | `31-42-*.nasm` | `sse_add_packed_single`, `avx_multiply_packed_double` |
 | Crypto | `37-aes.nasm`, `43-sha.nasm` | `aes_encrypt_round`, `sha_next_round` |
+| Structs | `48-structs.nasm` | `begin_struct`, `end_struct`, `struct_dword`, `struct_nested`, `struct_byte` |
 
 ### Find a macro
 
@@ -419,9 +475,11 @@ bash tests/run_tests.sh
 ```
 
 The suite checks that every macro file assembles, both `examples/example.asm`
-and `examples/sdl_rectangle.asm` build for Linux and Windows, the runtime
-smoke test (`tests/smoke_test.asm`) executes real code through the macros and
-verifies the results, and the SDL demo launches without crashing.
+and `examples/sdl_rectangle.asm` build for Linux and Windows, the struct
+demo (`examples/structs.asm`) assembles and its runtime offset checks pass,
+the runtime smoke test (`tests/smoke_test.asm`) executes real code through
+the macros and verifies the results, and the SDL demo launches without
+crashing.
 
 ---
 
@@ -431,6 +489,8 @@ verifies the results, and the SDL demo launches without crashing.
   instruction` comments on every line.
 - **`examples/fibonacci.asm`** / **`examples/fibonacci_raw.asm`** — the same
   program written with and without readable macros, side by side.
+- **`examples/structs.asm`** — C-like structs with nested structs, offsets
+  verified at runtime.
 - **`examples/sdl_rectangle.asm`** — a complete interactive program.
 - **`tests/smoke_test.asm`** — readable macros in runtime-verified code
   (recursion, condition codes, sized memory operations).

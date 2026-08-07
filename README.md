@@ -46,6 +46,16 @@ Readable Assembly provides 1000+ macro definitions that replace cryptic x86-64 i
   `add dword [score], 10`. The same pattern covers `move_*`,
   `compare_*`, `logical_*`, `shift_*`, `rotate_*`, `multiply_*`, `divide_*`,
   `increment_*`, `decrement_*`, `negate_*` and `move_with_*_extend_*`.
+- **Numeric sizes** — `byte_size` (1), `word_size` (2), `dword_size` (4),
+  `qword_size` (8), `tword_size` (10), `oword_size` (16), `yword_size` (32),
+  `zword_size` (64). Use them instead of magic numbers:
+  `move accumulator_32, [base + dword_size]` instead of `[base + 4]`.
+- **C-like structs** — `begin_struct` / `end_struct` compute field offsets
+  for you, with `struct_byte` / `struct_word` / `struct_dword` /
+  `struct_qword` / `struct_field` / `struct_nested` members. Access fields by
+  name: `[base + player.field_score]`, nested: 
+  `[base + entity.field_hitbox + rect.field_bottomright + point.field_y]`.
+  Every struct publishes a `Type_size` constant for `reserve_byte`.
 
 ## Common Macro Cheat Sheet
 
@@ -69,6 +79,10 @@ Readable Assembly provides 1000+ macro definitions that replace cryptic x86-64 i
 | `score: define_dword 100` / `define_qword` | `dd` / `dq` (data) |
 | `buffer: reserve_byte 256` | `resb` (storage) |
 | `equate answer, 42` | `equ` |
+| `begin_struct point` / `end_struct` | struct layout (48-structs.nasm) |
+| `struct_dword field_x` (member) | `point.field_x` = 0, `point_size` = 4 |
+| `struct_nested field_hitbox, rect` | nested struct member |
+| `[base + point.field_y]` / `dword_size` | named offset / numeric size |
 
 ## Quick Start
 
@@ -128,6 +142,7 @@ readable_assembly/
 │   ├── example.asm           # Basic usage examples
 │   ├── fibonacci.asm         # Fibonacci with readable macros
 │   ├── fibonacci_raw.asm     # Same program, raw NASM (for comparison)
+│   ├── structs.asm           # C-like structs + nested structs demo
 │   └── sdl_rectangle.asm     # SDL2 game demo
 ├── tests/
 │   ├── run_tests.sh          # Test suite
@@ -153,6 +168,7 @@ readable_assembly/
 | FPU | `23-29-fpu-*.nasm` | FPU data transfer, arithmetic, transcendental |
 | SSE/AVX | `31-42-*.nasm` | SSE through AVX-512 instructions |
 | Crypto | `37-aes.nasm`, `43-sha.nasm` | AES, SHA extensions |
+| Structs | `48-structs.nasm` | `begin_struct`, `end_struct`, `struct_dword`, `struct_nested` |
 
 ## SDL2 Example
 
@@ -199,10 +215,12 @@ The suite verifies that:
 1. Every macro file in `macros/` assembles standalone
 2. `examples/example.asm` assembles for both `elf64` (Linux) and `win64` (Windows)
 3. `examples/sdl_rectangle.asm` assembles for both formats
-4. `tests/smoke_test.asm` compiles, links and **runs** — exercising arithmetic,
+4. `examples/structs.asm` assembles for both formats and its runtime
+   struct-offset checks pass
+5. `tests/smoke_test.asm` compiles, links and **runs** — exercising arithmetic,
    logic, shifts, stack ops, procedures and recursion via the readable macros
    (exits 0 only if every runtime check passes)
-5. The SDL2 demo launches, creates a window, and runs without crashing
+6. The SDL2 demo launches, creates a window, and runs without crashing
 
 ## Requirements
 

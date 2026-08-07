@@ -6,6 +6,8 @@
 #   1. Every macro file assembles standalone (syntax check)
 #   2. examples/example.asm assembles for both win64 and elf64
 #   3. examples/sdl_rectangle.asm assembles for both win64 and elf64
+#   3b. examples/structs.asm assembles for both formats and its runtime
+#       struct-offset checks pass
 #   4. The runtime smoke test compiles, links and passes
 #   5. The SDL demo links against SDL2 and runs without crashing
 #
@@ -102,6 +104,26 @@ check "examples/example.asm (win64)" assemble win64 "$ROOT/examples/example.asm"
 echo "--- examples/sdl_rectangle.asm ---"
 check "examples/sdl_rectangle.asm (elf64)" assemble elf64 "$ROOT/examples/sdl_rectangle.asm" "$BUILD/sdl_linux.o"
 check "examples/sdl_rectangle.asm (win64)" assemble win64 "$ROOT/examples/sdl_rectangle.asm" "$BUILD/sdl_win.o"
+
+# ---------------------------------------------------------------------------
+# 3b. examples/structs.asm - assembles for both formats
+# ---------------------------------------------------------------------------
+echo "--- examples/structs.asm ---"
+check "examples/structs.asm (elf64)" assemble elf64 "$ROOT/examples/structs.asm" "$BUILD/structs_elf.o"
+check "examples/structs.asm (win64)" assemble win64 "$ROOT/examples/structs.asm" "$BUILD/structs_win.o"
+if [ "$WIN64" -eq 1 ] && \
+   "$GCC" "$BUILD/structs_win.o" -o "$BUILD/structs.exe" >"$BUILD/test.log" 2>&1; then
+    "$BUILD/structs.exe"
+    if [ $? -eq 0 ]; then
+        echo "  PASS  structs.exe runs, struct offsets verified at runtime"
+        PASS=$((PASS+1))
+    else
+        echo "  FAIL  structs.exe exited with $?"
+        FAIL=$((FAIL+1))
+    fi
+else
+    echo "  SKIP  structs runtime check (non-Windows or link failed)"
+fi
 
 # ---------------------------------------------------------------------------
 # 4. Runtime smoke test

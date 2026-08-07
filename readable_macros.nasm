@@ -85,6 +85,9 @@
 ; --- ADX ---
 %include "macros/47-adx.nasm"
 
+; --- Structs ---
+%include "macros/48-structs.nasm"
+
 ; --- Bound ---
 %include "macros/49-bound.nasm"
 

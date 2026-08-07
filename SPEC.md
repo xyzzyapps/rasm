@@ -136,7 +136,7 @@ Defines all readable register aliases:
 
 | Files | Coverage |
 |---|---|
-| `02-flags.nasm`, `03-sizes.nasm`, `04-segments.nasm` | Flag/size/segment constants. |
+| `02-flags.nasm`, `03-sizes.nasm`, `04-segments.nasm` | Flag/size/segment constants. `03-sizes.nasm` also defines numeric byte counts: `byte_size` (1) .. `zword_size` (64). |
 | `05-data-movement.nasm` | `move`, `move_byte..qword`, `load_effective_address`, `exchange`, `compare_and_exchange`, `move_if_*` (cmov), `move_with_*_extend_*`, data directives (`define_*`, `reserve_*`, `equate`). |
 | `06-arithmetic.nasm` | `add`, `subtract`, `increment`, `decrement`, `negate`, `multiply`, `signed_multiply`, `divide`, `compare` + sized forms. |
 | `07-logic.nasm` | `logical_and`, `logical_or`, `logical_xor`, `logical_not` + sized forms. |
@@ -155,6 +155,7 @@ Defines all readable register aliases:
 | `30` (MMX) | MMX instructions. |
 | `31`-`36` (SSE..SSE4.2), `39`-`42` (AVX..AVX-512) | SIMD families. |
 | `37-aes.nasm`, `38-pclmulqdq.nasm`, `43-sha.nasm`, `44-gfni.nasm` | Crypto extensions. |
+| `48-structs.nasm` | C-like structs: `begin_struct` / `end_struct`, `struct_byte` / `struct_word` / `struct_dword` / `struct_qword`, `struct_field` (raw size), `struct_nested` (embed another struct). Each struct publishes `Type.field` offset constants and a `Type_size` total. |
 | `45`-`60` | MPX, BMI, ADX, bound, newer extensions, SGX, XSAVE, TSX, user interrupts, PTWRITE, VMX, CET shadow stack. |
 
 ### 4.3 `tools/readablify/` (Go)
@@ -219,6 +220,9 @@ Checks:
 1. Every `macros/*.nasm` file assembles standalone (`-f win64`).
 2. `examples/example.asm` assembles for `elf64` and `win64`.
 3. `examples/sdl_rectangle.asm` assembles for `elf64` and `win64`.
+3b. `examples/structs.asm` assembles for `elf64` and `win64`, and on
+   Windows it is linked and run; it exits 0 only if every struct offset
+   constant and field access check passes at runtime.
 4. `tests/smoke_test.asm` compiles, links and **runs**; it exercises
    factorial recursion, arithmetic, logic, shifts/rotates, stack ops,
    condition codes and sized memory operations via the readable macros and
@@ -286,6 +290,7 @@ readable_assembly/
 │   ├── example.asm           # macro tour
 │   ├── fibonacci.asm         # readable Fibonacci
 │   ├── fibonacci_raw.asm     # raw Fibonacci (comparison)
+│   ├── structs.asm           # C-like structs, nested, runtime-verified
 │   └── sdl_rectangle.asm     # SDL2 game
 ├── tests/
 │   ├── run_tests.sh          # bash test suite
@@ -305,6 +310,9 @@ gitignored anywhere.
   repo root is the working directory (or `-I <root>` is passed).
 - `readablify` covers the core instruction set plus a common FPU subset;
   SSE/AVX and exotic mnemonics pass through (registers still renamed).
+- Structs have no automatic alignment/padding (C compilers pad by default);
+  `struct_field` with an explicit size can be used to insert padding or
+  alignment bytes manually.
 - The library documents both the primary readable names and the legacy
   `register_*` aliases; the legacy set is maintained for backwards
   compatibility and may be removed in a future major release.
