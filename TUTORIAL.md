@@ -358,6 +358,63 @@ offset at runtime.
 
 ---
 
+## 5.7 Example: rasl — a Lisp that writes the assembly for you
+
+`compiler/` ships **rasl**, a tiny Go compiler for a minimal Lisp (no lists,
+closures, or GC) whose output is *this* library's readable assembly. It is a
+very thin wrapper over rasm: each construct emits a small, commented rasm
+block, and inline assembly is a first-class block written in rasm itself.
+
+**Your first program** — `examples/lisp/hello.lisp`:
+
+```lisp
+(define-struct point (x : qword) (y : dword) (tag : byte))
+(global count)
+(define magic 99)
+(define-array buf 4)
+
+(define (fact n) (if (< n 2) 1 (* n (fact (- n 1)))))
+
+(define (main)
+  (set! count 0)
+  (while (< count 3)
+    (begin
+      (print (fact (+ count 2)))
+      (set! count (+ count 1))))
+  (array-set buf 0 42)
+  (struct-set buf point.x 7)
+  (print (array-get buf 0))          ; 7
+  (print (struct-get buf point.x))   ; 7
+  (asm (no_operation))
+  (print magic)                      ; 99
+  (exit 0))
+```
+
+Build and run (from the repo root):
+
+```bash
+cd compiler && go build -o ../build/rasl.exe . && cd ..
+build/rasl.exe examples/lisp/hello.lisp -o build/hello.asm
+nasm -f win64 build/hello.asm -o build/hello.o -I .
+gcc build/hello.o -o build/hello.exe && build/hello.exe
+```
+
+**What you get is readable assembly.** The struct becomes a real
+`begin_struct` block, the array access becomes
+`load_effective_address counter_64, [buf]` plus
+`move accumulator_64, [counter_64 + data_64*8]`, the recursion becomes real
+`call_procedure`/`return_from_procedure` frames, and `(asm ...)` statements
+are passed through verbatim. Source-to-asm is a 1:1 trace — the point of the
+whole project.
+
+Values are raw 64-bit integers; function arguments live on the stack and the
+result in `accumulator_64`; `print` emits decimal output (libc `puts` on
+Windows, the `write` syscall on Linux — the same `.asm` assembles for both
+formats). Reserved rasm names like `counter` are rejected as identifiers so
+the generated code always assembles.
+
+---
+
 ## 6. Example: the SDL2 game
 
 The repo ships a complete game, `examples/sdl_rectangle.asm` — it opens an

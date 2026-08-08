@@ -23,6 +23,11 @@ Readable Assembly provides 1000+ macro definitions that replace cryptic x86-64 i
 - **Modular includes** — Include the full macro set or pick individual categories
 - **Zero runtime overhead** — Pure NASM preprocessor macros, no performance impact
 - **Self-documenting code** — Instructions read like English descriptions
+- **rasl compiler (Go)** — a minimal Lisp (no lists, closures, or GC) that
+  compiles directly to readable assembly built on these macros. Structs map to
+  `begin_struct`, arrays to `reserve_qword` blocks, and inline assembly is a
+  first-class block written in rasm itself. See `compiler/` and
+  `examples/lisp/`.
 
 ## Naming Conventions
 
@@ -143,9 +148,19 @@ readable_assembly/
 │   ├── fibonacci.asm         # Fibonacci with readable macros
 │   ├── fibonacci_raw.asm     # Same program, raw NASM (for comparison)
 │   ├── structs.asm           # C-like structs + nested structs demo
-│   └── sdl_rectangle.asm     # SDL2 game demo
+│   ├── sdl_rectangle.asm     # SDL2 game demo
+│   └── lisp/
+│       ├── hello.lisp        # rasl demo (every language feature)
+│       └── hello.expected    # expected output for the test suite
+├── compiler/                 # rasl: a Lisp that compiles to rasm (Go)
+│   ├── main.go               # CLI
+│   ├── reader.go             # s-expression reader
+│   ├── codegen.go            # symbol table + code emission
+│   ├── runtime.rasm          # embedded runtime (win64/elf64 via %ifidn)
+│   └── *_test.go             # reader + codegen unit tests
 ├── tests/
 │   ├── run_tests.sh          # Test suite
+│   ├── run_lisp.sh           # rasl end-to-end tests
 │   └── smoke_test.asm        # Runtime-verified macro smoke test
 └── tools/
     └── readablify/           # Go tool: raw NASM -> readable macros
@@ -202,6 +217,47 @@ go build -o readablify .
 
 See [tools/readablify/README.md](tools/readablify/README.md) for full usage.
 
+## rasl — a Lisp that compiles to readable assembly
+
+`compiler/` is a small Go compiler for **rasl**, a minimal Lisp (no lists,
+closures, or GC) that translates directly into readable assembly built on the
+rasm macros. It is a very thin wrapper over rasm:
+
+- **Values** are raw 64-bit integers. No tags, no heap, no garbage collector.
+- **Structs** (`define-struct`) map to `begin_struct` with C-style alignment
+  and sized field access: `(struct-set addr point.x v)` emits
+  `move [data_64 + point.x], accumulator_64`.
+- **Arrays** (`define-array`) are static `reserve_qword` blocks with
+  register-based indexing.
+- **Inline assembly is a first-class block** written in rasm itself:
+  `(asm (move accumulator_64 60) (syscall_invoke))`.
+- **Control flow**: `if`, `cond`, `while`, `begin`, `label`/`goto`, and
+  recursive functions (arguments on the stack, result in `accumulator_64`).
+- **Globals**: `global`, `define`, `set!`, `print`, `exit`.
+
+Build and run the demo:
+
+```bash
+# build the compiler
+cd compiler && go build -o ../build/rasl.exe . && cd ..
+
+# compile a program into readable assembly
+build/rasl.exe examples/lisp/hello.lisp -o build/hello.asm
+
+# assemble + link + run (from the repo root so the %include resolves)
+nasm -f win64 build/hello.asm -o build/hello.o -I .
+gcc build/hello.o -o build/hello.exe     # Windows
+build/hello.exe
+
+nasm -f elf64 build/hello.asm -o build/hello.o -I .
+ld build/hello.o -o build/hello          # Linux (syscall-based runtime)
+```
+
+The same generated `.asm` assembles for both `win64` and `elf64`; the runtime
+picks its entry point and `print`/`exit` implementation with
+`%ifidn __OUTPUT_FORMAT__, win64` (libc on Windows, raw syscalls on Linux).
+Run `build/rasl.exe -h` for flags (`-o` output, `-v` verbose logging).
+
 ## Testing
 
 Run the full test suite (requires NASM and, on Windows, MinGW gcc + SDL2):
@@ -221,12 +277,17 @@ The suite verifies that:
    logic, shifts, stack ops, procedures and recursion via the readable macros
    (exits 0 only if every runtime check passes)
 6. The SDL2 demo launches, creates a window, and runs without crashing
+7. The **rasl compiler** (Go) builds, its unit tests pass, and its end-to-end
+   suite (`tests/run_lisp.sh`) compiles `hello.lisp`, assembles the result for
+   both formats, and verifies the running program's output matches
+   `examples/lisp/hello.expected`
 
 ## Requirements
 
 - **NASM** — Netwide Assembler (2.14+)
 - **Linux**: `ld` or `gcc` for linking
 - **Windows**: MinGW-w64 with SDL2 for the game demo
+- **Go 1.21+** — to build the rasl compiler and readablify tool
 
 ## License
 

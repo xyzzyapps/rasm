@@ -174,6 +174,43 @@ Defines all readable register aliases:
   (in place), `-verify`, `-f <format>`.
 - Build: `cd tools/readablify && go build -o readablify .`
 
+### 4.4 `compiler/` — rasl, a minimal Lisp that compiles to rasm (Go)
+
+**Purpose**: translate a minimal Lisp (no lists, closures, or GC) into
+readable assembly built on the rasm macros. A very thin wrapper over rasm:
+every language construct maps 1:1 onto a small, commented rasm block.
+
+- **Values**: raw 64-bit integers only. `#t` = 1, `#f` = 0. No tags, no heap,
+  no garbage collector.
+- **Calling convention** (defined by the compiler, used on both ends):
+  function arguments are pushed on the stack in order; the result is left in
+  `accumulator_64`; arguments live at `[base_pointer + 16 + 8*i]`.
+- **Forms**: `define` (scalar + function), `global`, `define-array`,
+  `define-struct`, `set!`, `if`, `cond`, `while`, `begin`, `label`/`goto`,
+  `asm`, `print`, `exit`, arithmetic/comparison operators, `array-get/set`,
+  `struct-get/set`.
+- **Structs**: `define-struct` emits `begin_struct`/`end_struct` with
+  C-style alignment (fields in declaration order, explicit `struct_field`
+  padding) and sized field access (byte/word zero-extended reads, sized
+  stores; dword reads use raw `movzx` since no rasm macro exists).
+- **Arrays**: static `reserve_qword` blocks; indexing is register-based
+  (`load_effective_address` base + `[counter_64 + data_64*8]`) because a
+  symbol + index displacement needs a 32-bit absolute relocation that win64
+  rejects.
+- **Inline assembly**: `(asm ...)` is a block of rasm statements written as
+  s-expressions — the escape hatch to the full macro vocabulary. The value of
+  an asm block is `accumulator_64` after the last statement.
+- **Runtime** (`runtime.rasm`, embedded via `//go:embed`): entry wrapper
+  (`main` on win64 via libc/`puts`, `_start` + syscalls on elf64, selected
+  with `%ifidn __OUTPUT_FORMAT__, win64`), `rasl_print` (decimal conversion
+  + `puts` on Windows / `write` syscall on Linux), and `rasl_exit` (win64:
+  restore the entry stack pointer saved in `register_r15` and `ret` from
+  `main`, exactly like `tests/smoke_test.asm`; elf64: `exit` syscall).
+- **Reserved names**: the compiler rejects identifiers that collide with rasm
+  register aliases (e.g. `counter`, `data`), which would break assembly.
+- **CLI**: `rasl [flags] input.lisp`; flags `-o out.asm`, `-v` (verbose
+  logging to stderr). Build: `cd compiler && go build -o ../build/rasl.exe .`
+
 ## 5. Data model
 
 No runtime data structures — the library is purely preprocessor. The only
@@ -230,6 +267,7 @@ Checks:
 5. The SDL demo links against SDL2 and is launched; passes if it stays alive
    (window created) or exits cleanly with code 0. SDL2.dll is copied next to
    the executable on Windows when found under MSYS2.
+6. The rasl compiler suite (`tests/run_lisp.sh`, skipped if Go is missing).
 
 Exit status is nonzero when any check fails. Summary prints
 `RESULTS: <pass> passed, <fail> failed`.
@@ -247,13 +285,24 @@ the conversion changes readability, not behavior. Known nuance: `xor rax, rax`
 converts to `logical_xor accumulator, accumulator` (not `move accumulator, 0`)
 because flags behavior differs.
 
+### 7.4 `tests/run_lisp.sh` — rasl end-to-end
+
+Builds the rasl compiler with `go build`, runs its unit tests
+(`go test ./...`), compiles `examples/lisp/hello.lisp` into readable
+assembly, assembles the result for both `elf64` and `win64`, and on Windows
+links it with MinGW gcc, runs it, and diffs the output against
+`examples/lisp/hello.expected` (CR stripped, since msvcrt `puts` emits CRLF).
+`hello.lisp` exercises every language feature: structs, arrays, globals,
+recursive functions, `if`/`cond`/`while`, `label`/`goto`, `asm`, `print` and
+`exit`; the expected output is `2 6 24 7 7 55 99` (one per line).
+
 ## 8. Build and run
 
 ### 8.1 Requirements
 
 - NASM 2.14+ (tested with 2.16).
 - A linker: Linux `ld` or `gcc`; Windows MinGW-w64 `gcc`.
-- Go 1.21+ for `readablify`.
+- Go 1.21+ for `readablify` and the rasl compiler.
 - SDL2 (optional) for the game demo.
 - bash (Git Bash or MSYS2) for the test suite.
 
@@ -278,6 +327,12 @@ bash tests/run_tests.sh
 # build and use readablify
 cd tools/readablify && go build -o readablify .
 ./readablify -verify examples/fibonacci_raw.asm
+
+# build and run the rasl compiler demo
+cd compiler && go build -o ../build/rasl.exe . && cd ..
+build/rasl.exe examples/lisp/hello.lisp -o build/hello.asm
+nasm -f win64 build/hello.asm -o build/hello.o -I .
+gcc build/hello.o -o build/hello.exe && build/hello.exe
 ```
 
 ## 9. Repository layout
@@ -291,9 +346,14 @@ readable_assembly/
 │   ├── fibonacci.asm         # readable Fibonacci
 │   ├── fibonacci_raw.asm     # raw Fibonacci (comparison)
 │   ├── structs.asm           # C-like structs, nested, runtime-verified
-│   └── sdl_rectangle.asm     # SDL2 game
+│   ├── sdl_rectangle.asm     # SDL2 game
+│   └── lisp/
+│       ├── hello.lisp        # rasl demo (every language feature)
+│       └── hello.expected    # expected output for tests/run_lisp.sh
+├── compiler/                 # rasl compiler (Go): reader, codegen, runtime
 ├── tests/
 │   ├── run_tests.sh          # bash test suite
+│   ├── run_lisp.sh           # rasl end-to-end suite
 │   └── smoke_test.asm        # runtime smoke test
 ├── tools/readablify/         # Go conversion tool
 ├── README.md                 # overview + quick start
@@ -310,9 +370,16 @@ gitignored anywhere.
   repo root is the working directory (or `-I <root>` is passed).
 - `readablify` covers the core instruction set plus a common FPU subset;
   SSE/AVX and exotic mnemonics pass through (registers still renamed).
-- Structs have no automatic alignment/padding (C compilers pad by default);
-  `struct_field` with an explicit size can be used to insert padding or
-  alignment bytes manually.
+- The rasm struct macros have no automatic alignment/padding (C compilers
+  pad by default); `struct_field` with an explicit size can be used to insert
+  padding or alignment bytes manually. The rasl compiler, by contrast,
+  performs C-style alignment itself when emitting structs.
 - The library documents both the primary readable names and the legacy
   `register_*` aliases; the legacy set is maintained for backwards
   compatibility and may be removed in a future major release.
+- **rasl roadmap**: the language is intentionally a thin wrapper over rasm
+  (no lists, closures, or GC). Possible next steps: local variables with
+  stack frames, `define-macro`, per-function tail calls, and an FFI to
+  external C functions (the win64 runtime already calls libc `puts`).
+  Because output is readable rasm, hand-optimizing hot loops in generated
+  code is the intended high-performance path.

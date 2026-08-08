@@ -10,6 +10,7 @@
 #       struct-offset checks pass
 #   4. The runtime smoke test compiles, links and passes
 #   5. The SDL demo links against SDL2 and runs without crashing
+#   6. The rasl compiler (Go) builds and its end-to-end suite passes
 #
 # Usage:  bash tests/run_tests.sh
 # ============================================================================
@@ -219,6 +220,23 @@ if [ "$SDL_AVAILABLE" -eq 1 ]; then
     fi
 else
     echo "  SKIP  SDL2 not available - sdl_rectangle linked but not run"
+fi
+
+# ---------------------------------------------------------------------------
+# 6. rasl compiler (Go) - run its own end-to-end suite
+# ---------------------------------------------------------------------------
+echo "--- rasl compiler (Go) ---"
+if command -v go >/dev/null 2>&1 || command -v /usr/bin/go >/dev/null 2>&1; then
+    if bash "$ROOT/tests/run_lisp.sh" >"$BUILD/lisp_test.log" 2>&1; then
+        echo "  PASS  rasl compiler suite (see run_lisp.sh)"
+        PASS=$((PASS+1))
+    else
+        echo "  FAIL  rasl compiler suite (see run_lisp.sh)"
+        tail -15 "$BUILD/lisp_test.log" | sed 's/^/        /'
+        FAIL=$((FAIL+1))
+    fi
+else
+    echo "  SKIP  rasl compiler suite (go not found)"
 fi
 
 # ---------------------------------------------------------------------------

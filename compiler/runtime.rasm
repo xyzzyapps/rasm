@@ -1,0 +1,93 @@
+; ============================================================================
+; rasl runtime - emitted by the rasl compiler (embedded in codegen.go)
+;
+;   Windows (win64): entry is `main`; print goes through libc puts; the
+;                    program terminates by returning from main with the status
+;                    in accumulator_64, exactly like tests/smoke_test.asm.
+;   Linux   (elf64): entry is `_start`; print uses the write syscall; exit
+;                    uses the exit syscall. No libc needed.
+;
+; rasl_exit is the shared termination point. The compiler compiles (exit n)
+; to "move accumulator_64, n; jump rasl_exit". On win64 it unwinds any
+; intermediate frames by restoring the entry stack pointer saved in r15.
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; Entry wrapper: run global initializers, call the user entry, terminate with
+; its return value as the process status.
+; ----------------------------------------------------------------------------
+%ifidn __OUTPUT_FORMAT__, win64
+    extern puts
+
+    global main
+main:
+    move register_r15, stack_pointer      ; save entry rsp for (exit)
+    call_procedure rasl_init
+    call_procedure rasl_main
+rasl_exit:
+    move stack_pointer, register_r15      ; unwind frames (exit) or no-op (normal)
+    return_from_procedure                 ; CRT exits with status in eax
+%else
+    global _start
+_start:
+    call_procedure rasl_init
+    call_procedure rasl_main
+rasl_exit:
+    move destination_index_64, accumulator_64 ; rdi = status (SysV arg 1)
+    move accumulator_64, 60                   ; exit syscall number
+    syscall_invoke
+%endif
+
+; ----------------------------------------------------------------------------
+; rasl_print: prints the unsigned value in accumulator_64 as a decimal number
+; followed by a newline. Preserves the original value in accumulator_64 so
+; (print x) evaluates to x.
+; ----------------------------------------------------------------------------
+rasl_print:
+    push_onto_stack base_pointer
+    move base_pointer, stack_pointer
+    push_onto_stack accumulator_64            ; saved value (return unchanged)
+    push_onto_stack counter_64
+    push_onto_stack data_64
+    push_onto_stack register_r8
+
+    move register_r8, 10                      ; divisor
+    move data_64, accumulator_64              ; value
+    load_effective_address counter_64, [rasl_buf + 31] ; write digits from the end
+    move_byte [counter_64], 0                 ; NUL terminator
+
+.rasl_print_loop:
+    move accumulator_64, data_64
+    move data_64, 0                           ; zero high half (unsigned div)
+    divide register_r8                        ; rax = v/10, rdx = v%10
+    add data_64, 48                           ; digit -> '0'..'9'
+    subtract counter_64, 1
+    move_byte [counter_64], data_8            ; store digit
+    move data_64, accumulator_64              ; quotient
+    compare data_64, 0
+    jump_if_not_equal .rasl_print_loop
+
+    ; counter now points at the first digit; the string is NUL-terminated
+%ifidn __OUTPUT_FORMAT__, win64
+    logical_and stack_pointer, -16            ; align before libc call
+    subtract stack_pointer, 32                ; shadow space
+    ; rcx (counter_64) already holds the string pointer
+    call_procedure puts
+    add stack_pointer, 32
+%else
+    load_effective_address data_64, [rasl_buf + 31] ; rdx = buffer end
+    subtract data_64, counter_64               ; rdx = length (digits only)
+    move source_index_64, counter_64          ; rsi = buffer
+    move destination_index_64, 1              ; rdi = stdout
+    move accumulator_64, 1                    ; rax = write syscall number
+    syscall_invoke
+%endif
+
+    move stack_pointer, base_pointer
+    subtract stack_pointer, 32            ; point at the first saved register
+    pop_from_stack register_r8
+    pop_from_stack data_64
+    pop_from_stack counter_64
+    pop_from_stack accumulator_64
+    pop_from_stack base_pointer
+    return_from_procedure
