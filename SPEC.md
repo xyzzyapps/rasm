@@ -174,6 +174,30 @@ Defines all readable register aliases:
   (in place), `-verify`, `-f <format>`.
 - Build: `cd tools/readablify && go build -o readablify .`
 
+### 4.3.1 `tools/disasm/` — rasmdis (Go, Fyne)
+
+A window that disassembles x86 machine code into Intel syntax and into the
+readable names from this library.
+
+- **Input**: Windows `.exe`, `.dll`, `.lib`, and COFF `.obj`; Linux ELF
+  executables, `.so`, `.o`, and `.a`; macOS Mach-O executables, `.dylib`,
+  `.o`, `.a`, and universal binaries (the x86_64 or i386 slice). Hex text
+  can be pasted. Raw bytes still open.
+- **Listing**: the table column is the Readable Assembly name. The Intel
+  mnemonic is shown on the selected line.
+- **Decode**: linear sweep with `golang.org/x/arch/x86/x86asm`, modes 16/32/64.
+  A rejected byte is shown as `define_byte`.
+- **Names**: the core mnemonic and register tables match `readablify`.
+  Sized forms (`add dword ptr [rax], 1` -> `add_dword [accumulator], 1`) and
+  `rep` (`repeat store_string_byte`) are included. Unknown mnemonics keep
+  the Intel spelling; registers inside them are still renamed.
+- **Symbols**: ELF and COFF symbol tables become labels. Relocations replace
+  numeric call and memory targets with the symbol name.
+- **CLI**: `rasmdis` opens the window. `rasmdis -dump file [-section .text]
+  [-mode 64] [-base 0x..] [-start N]` writes a listing to stdout.
+- **Build**: `cd tools/disasm && go build -o ../../build/rasmdis.exe .`
+  CGO and gcc are required. Tests: `go test ./internal/disasm/`.
+
 ### 4.4 `compiler/` — rasl, a minimal Lisp that compiles to rasm (Go)
 
 **Purpose**: translate a minimal Lisp (no lists, closures, or GC) into
@@ -268,6 +292,8 @@ Checks:
    (window created) or exits cleanly with code 0. SDL2.dll is copied next to
    the executable on Windows when found under MSYS2.
 6. The rasl compiler suite (`tests/run_lisp.sh`, skipped if Go is missing).
+7. The rasmdis decoder tests (`go test` in `tools/disasm/internal/disasm`,
+   skipped if Go is missing). The window itself is not launched.
 
 Exit status is nonzero when any check fails. Summary prints
 `RESULTS: <pass> passed, <fail> failed`.
@@ -303,6 +329,7 @@ recursive functions, `if`/`cond`/`while`, `label`/`goto`, `asm`, `print` and
 - NASM 2.14+ (tested with 2.16).
 - A linker: Linux `ld` or `gcc`; Windows MinGW-w64 `gcc`.
 - Go 1.21+ for `readablify` and the rasl compiler.
+- Go 1.24+ and a C compiler for the rasmdis window (CGO).
 - SDL2 (optional) for the game demo.
 - bash (Git Bash or MSYS2) for the test suite.
 
@@ -327,6 +354,9 @@ bash tests/run_tests.sh
 # build and use readablify
 cd tools/readablify && go build -o readablify .
 ./readablify -verify examples/fibonacci_raw.asm
+
+# build the disassembler window (needs gcc / CGO)
+cd tools/disasm && go build -o ../../build/rasmdis.exe .
 
 # build and run the rasl compiler demo
 cd compiler && go build -o ../build/rasl.exe . && cd ..
@@ -356,6 +386,7 @@ readable_assembly/
 │   ├── run_lisp.sh           # rasl end-to-end suite
 │   └── smoke_test.asm        # runtime smoke test
 ├── tools/readablify/         # Go conversion tool
+├── tools/disasm/             # rasmdis: Fyne disassembler (Intel + rasm names)
 ├── README.md                 # overview + quick start
 ├── TUTORIAL.md               # hands-on guide
 └── SPEC.md                   # this document
@@ -370,6 +401,7 @@ gitignored anywhere.
   repo root is the working directory (or `-I <root>` is passed).
 - `readablify` covers the core instruction set plus a common FPU subset;
   SSE/AVX and exotic mnemonics pass through (registers still renamed).
+  `rasmdis` uses that same core set when it prints a disassembly.
 - The rasm struct macros have no automatic alignment/padding (C compilers
   pad by default); `struct_field` with an explicit size can be used to insert
   padding or alignment bytes manually. The rasl compiler, by contrast,

@@ -163,9 +163,13 @@ readable_assembly/
 │   ├── run_lisp.sh           # rasl end-to-end tests
 │   └── smoke_test.asm        # Runtime-verified macro smoke test
 └── tools/
-    └── readablify/           # Go tool: raw NASM -> readable macros
+    ├── readablify/           # Go tool: raw NASM -> readable macros
+    │   ├── main.go
+    │   └── README.md
+    └── disasm/               # Fyne disassembler: machine code -> rasm names
         ├── main.go
-        └── README.md
+        ├── gui.go
+        └── internal/disasm/
 ```
 
 ## Macro Categories
@@ -216,6 +220,22 @@ go build -o readablify .
 ```
 
 See [tools/readablify/README.md](tools/readablify/README.md) for full usage.
+
+## rasmdis — disassembler
+
+`tools/disasm/` is a Fyne window. The instruction column uses Readable
+Assembly names. It opens Windows `.exe`, `.dll`, and `.lib` files, Linux ELF
+executables and `.so` files, and macOS Mach-O executables and `.dylib` files.
+The build needs CGO and gcc.
+
+```bash
+cd tools/disasm
+go build -o ../../build/rasmdis.exe .
+../../build/rasmdis.exe
+../../build/rasmdis.exe -dump ../../build/hello.exe -section .text
+```
+
+See [tools/disasm/README.md](tools/disasm/README.md).
 
 ## rasl — a Lisp that compiles to readable assembly
 
@@ -281,6 +301,7 @@ The suite verifies that:
    suite (`tests/run_lisp.sh`) compiles `hello.lisp`, assembles the result for
    both formats, and verifies the running program's output matches
    `examples/lisp/hello.expected`
+8. The **rasmdis** decoder tests pass (`go test` in `tools/disasm`)
 
 ## Requirements
 
@@ -288,6 +309,7 @@ The suite verifies that:
 - **Linux**: `ld` or `gcc` for linking
 - **Windows**: MinGW-w64 with SDL2 for the game demo
 - **Go 1.21+** — to build the rasl compiler and readablify tool
+- **Go 1.24+ and a C compiler** — to build the rasmdis window (CGO)
 
 ## License
 

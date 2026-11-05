@@ -11,6 +11,7 @@
 #   4. The runtime smoke test compiles, links and passes
 #   5. The SDL demo links against SDL2 and runs without crashing
 #   6. The rasl compiler (Go) builds and its end-to-end suite passes
+#   7. The rasmdis decoder tests pass
 #
 # Usage:  bash tests/run_tests.sh
 # ============================================================================
@@ -237,6 +238,23 @@ if command -v go >/dev/null 2>&1 || command -v /usr/bin/go >/dev/null 2>&1; then
     fi
 else
     echo "  SKIP  rasl compiler suite (go not found)"
+fi
+
+# ---------------------------------------------------------------------------
+# 7. rasmdis decoder tests (no GUI, no CGO)
+# ---------------------------------------------------------------------------
+echo "--- rasmdis ---"
+if command -v go >/dev/null 2>&1 || command -v /usr/bin/go >/dev/null 2>&1; then
+    if (cd "$ROOT/tools/disasm" && go test ./internal/disasm/) >"$BUILD/rasmdis_test.log" 2>&1; then
+        echo "  PASS  rasmdis decoder tests"
+        PASS=$((PASS+1))
+    else
+        echo "  FAIL  rasmdis decoder tests"
+        tail -15 "$BUILD/rasmdis_test.log" | sed 's/^/        /'
+        FAIL=$((FAIL+1))
+    fi
+else
+    echo "  SKIP  rasmdis decoder tests (go not found)"
 fi
 
 # ---------------------------------------------------------------------------
