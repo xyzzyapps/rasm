@@ -311,11 +311,6 @@ The suite verifies that:
 - **Go 1.21+** — to build the rasl compiler and readablify tool
 - **Go 1.24+ and a C compiler** — to build the rasmdis window (CGO)
 
-## License
-
-MIT — see [LICENSE](LICENSE). Copyright (c) 2026 Xyzzy Apps
-&lt;xyzzyapps@gmail.com&gt;.
-
 ## Credits
 
 This project was developed with assistance from AI models:
