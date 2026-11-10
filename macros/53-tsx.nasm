@@ -26,3 +26,7 @@
 %macro restricted_transaction_end 0
     xend
 %endmacro
+
+%macro transaction_test 0
+    xtest
+%endmacro

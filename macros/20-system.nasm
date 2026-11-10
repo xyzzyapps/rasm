@@ -58,6 +58,34 @@
     wbinvd
 %endmacro
 
+%macro write_back_caches_no_invalidate 0
+    wbnoinvd
+%endmacro
+
+%macro read_fs_segment_base 1
+    rdfsbase %1
+%endmacro
+
+%macro read_gs_segment_base 1
+    rdgsbase %1
+%endmacro
+
+%macro write_fs_segment_base 1
+    wrfsbase %1
+%endmacro
+
+%macro write_gs_segment_base 1
+    wrgsbase %1
+%endmacro
+
+%macro undefined_instruction_0 2
+    ud0 %1, %2
+%endmacro
+
+%macro undefined_instruction_1 2
+    ud1 %1, %2
+%endmacro
+
 %macro invalidate_tlb_entry 1
     invlpg %1
 %endmacro
@@ -123,6 +151,10 @@
 %endmacro
 
 %macro swap_gs_base 0
+    swapgs
+%endmacro
+
+%macro swap_gs_segment_base 0
     swapgs
 %endmacro
 

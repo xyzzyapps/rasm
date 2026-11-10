@@ -35,12 +35,12 @@ call func        ->  call_procedure func
 | Case | All names are lowercase. |
 | Separator | Words are joined with underscores (`_`), never hyphens — NASM rejects `-` in identifiers. |
 | Operand order | Intel order: destination first, then source. `move accumulator, 10` = `mov rax, 10`. |
-| Registers | Traditional names: `accumulator` (rax), `base` (rbx), `counter` (rcx), `data` (rdx), `source_index` (rsi), `destination_index` (rdi), `base_pointer` (rbp), `stack_pointer` (rsp). |
+| Registers | Traditional names: `accumulator` (rax), `base` (rbx), `counter` (rcx), `data` (rdx), `source_index` (rsi), `destination_index` (rdi), `base_pointer` (rbp), `stack_pointer` (rsp). Segment registers: `code_segment` (cs), `data_segment` (ds), `stack_segment` (ss), `extra_segment` (es), `fs_segment`, `gs_segment`. |
 | Width | Explicit in the name: `accumulator_64` (rax), `accumulator_32` (eax), `accumulator_16` (ax), `accumulator_8` (al), `accumulator_8_high` (ah). |
 | Extended regs | Explicit spelling `register_r8` .. `register_r15` with `register_r8_32` (r8d), `register_r8_16` (r8w), `register_r8_8` (r8b). |
 | Raw names | Exact NASM names (`rax`, `eax`, `ax`, `al`) always work — readable names are aliases, not replacements. |
 | Comparisons | Unsigned: `above` / `below` (ja/jb). Signed: `greater` / `less` (jg/jl). |
-| Sized memory ops | `_byte` / `_word` / `_dword` / `_qword` variants insert the operand-size qualifier: `add_dword [score], 10` -> `add dword [score], 10`. |
+| Sized memory ops | `_byte` / `_word` / `_double_word` / `_quad_word` variants insert the operand-size qualifier: `add_double_word [score], 10` -> `add dword [score], 10`. The short suffixes `_dword` and `_qword` remain as aliases. |
 | Data directives | `define_byte` (db), `define_word` (dw), `define_dword` (dd), `define_qword` (dq), `reserve_byte` (resb) .. `reserve_qword` (resq), `equate name, value` (equ). |
 
 ## 3. Architecture

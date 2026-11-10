@@ -101,6 +101,26 @@
     lss %1, %2
 %endmacro
 
+%macro load_pointer_data_segment 2
+    lds %1, %2
+%endmacro
+
+%macro load_pointer_extra_segment 2
+    les %1, %2
+%endmacro
+
+%macro load_pointer_fs_segment 2
+    lfs %1, %2
+%endmacro
+
+%macro load_pointer_gs_segment 2
+    lgs %1, %2
+%endmacro
+
+%macro load_pointer_stack_segment 2
+    lss %1, %2
+%endmacro
+
 ; --- Size Conversion ---
 ; The x86 has two families of sign-extending converts:
 ;   register form : cbw, cwde, cdqe        (result in the widened accumulator)

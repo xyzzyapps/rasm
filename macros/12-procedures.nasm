@@ -14,6 +14,14 @@
 %endif
 %endmacro
 
+%macro call_far_procedure 1
+    call far %1
+%endmacro
+
+%macro jump_far 1
+    jmp far %1
+%endmacro
+
 %macro return_far 0-1
 %if %0 = 1
     retf %1

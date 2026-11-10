@@ -26,6 +26,14 @@
 %endif
 %endmacro
 
+%macro fpu_conditional_move_if_not_below 0-1
+%if %0 = 1
+    fcmovnb %1
+%else
+    fcmovnb
+%endif
+%endmacro
+
 %macro fpu_conditional_move_if_not_below_or_equal 0-1
 %if %0 = 1
     fcmovnbe %1

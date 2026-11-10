@@ -149,6 +149,9 @@ readable_assembly/
 │   ├── fibonacci_raw.asm     # Same program, raw NASM (for comparison)
 │   ├── structs.asm           # C-like structs + nested structs demo
 │   ├── sdl_rectangle.asm     # SDL2 game demo
+│   ├── avx_physics.asm       # 8-wide AVX particle step and length squared
+│   ├── avx_audio.asm         # 8-wide AVX mix and clamp
+│   ├── avx_game.asm          # 8-wide AVX integrate and branchless cull
 │   └── lisp/
 │       ├── hello.lisp        # rasl demo (every language feature)
 │       └── hello.expected    # expected output for the test suite
@@ -162,6 +165,7 @@ readable_assembly/
 │   ├── run_tests.sh          # Test suite
 │   ├── run_lisp.sh           # rasl end-to-end tests
 │   └── smoke_test.asm        # Runtime-verified macro smoke test
+├── rasc/                     # tiny typed C compiler that emits rasm
 └── tools/
     ├── readablify/           # Go tool: raw NASM -> readable macros
     │   ├── main.go

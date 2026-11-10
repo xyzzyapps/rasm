@@ -26,10 +26,12 @@ var regMap = map[string]string{
 
 	"eflags": "register_eflags", "rflags": "register_rflags", "mxcsr": "register_mxcsr",
 
-	"cr0": "control_cr0", "cr2": "control_cr2", "cr3": "control_cr3",
-	"cr4": "control_cr4", "cr8": "control_cr8",
-	"dr0": "debug_dr0", "dr1": "debug_dr1", "dr2": "debug_dr2",
-	"dr3": "debug_dr3", "dr6": "debug_dr6", "dr7": "debug_dr7",
+	"cr0": "control_register_0", "cr2": "control_register_2", "cr3": "control_register_3",
+	"cr4": "control_register_4", "cr8": "control_register_8",
+	"dr0": "debug_register_0", "dr1": "debug_register_1", "dr2": "debug_register_2",
+	"dr3": "debug_register_3", "dr6": "debug_register_6", "dr7": "debug_register_7",
+	"cs": "code_segment", "ds": "data_segment", "es": "extra_segment",
+	"ss": "stack_segment", "fs": "fs_segment", "gs": "gs_segment",
 }
 
 func init() {
@@ -41,13 +43,13 @@ func init() {
 		regMap[n+"b"] = "register_" + n + "_8"
 	}
 	for i := 0; i <= 31; i++ {
-		regMap[fmt.Sprintf("xmm%d", i)] = fmt.Sprintf("xmm_%d", i)
-		regMap[fmt.Sprintf("ymm%d", i)] = fmt.Sprintf("ymm_%d", i)
-		regMap[fmt.Sprintf("zmm%d", i)] = fmt.Sprintf("zmm_%d", i)
+		regMap[fmt.Sprintf("xmm%d", i)] = fmt.Sprintf("sse_register_%d", i)
+		regMap[fmt.Sprintf("ymm%d", i)] = fmt.Sprintf("avx_register_%d", i)
+		regMap[fmt.Sprintf("zmm%d", i)] = fmt.Sprintf("avx512_register_%d", i)
 	}
 	for i := 0; i <= 7; i++ {
-		regMap[fmt.Sprintf("mmx%d", i)] = fmt.Sprintf("mmx_%d", i)
-		regMap[fmt.Sprintf("k%d", i)] = fmt.Sprintf("mask_k%d", i)
+		regMap[fmt.Sprintf("mmx%d", i)] = fmt.Sprintf("multimedia_register_%d", i)
+		regMap[fmt.Sprintf("k%d", i)] = fmt.Sprintf("mask_register_%d", i)
 	}
 }
 
@@ -60,13 +62,13 @@ var insMap = map[string]string{
 	"push": "push_onto_stack", "pop": "pop_from_stack",
 	"pusha": "push_all", "pushad": "push_all", "popa": "pop_all", "popad": "pop_all",
 	"pushf": "push_flags", "pushfw": "push_flags_word",
-	"pushfd": "push_flags_dword", "pushfq": "push_flags_qword",
+	"pushfd": "push_flags_double_word", "pushfq": "push_flags_quad_word",
 	"popf": "pop_flags", "popfw": "pop_flags_word",
-	"popfd": "pop_flags_dword", "popfq": "pop_flags_qword",
+	"popfd": "pop_flags_double_word", "popfq": "pop_flags_quad_word",
 	"movsb": "move_string_byte", "movsw": "move_string_word",
-	"movsd": "move_string_dword", "movsq": "move_string_qword",
+	"movsd": "move_string_double_word", "movsq": "move_string_quad_word",
 	"movzx": "move_with_zero_extend", "movsx": "move_with_sign_extend",
-	"movsxd": "move_with_sign_extend_dword",
+	"movsxd": "move_with_sign_extend_double_word",
 
 	"add": "add", "adc": "add_with_carry",
 	"adcx": "add_with_carry_flag", "adox": "add_with_overflow_flag",
@@ -157,32 +159,32 @@ var insMap = map[string]string{
 	"setnl": "set_if_not_less", "setnle": "set_if_not_less_or_equal",
 
 	"cmpsb": "compare_string_byte", "cmpsw": "compare_string_word",
-	"cmpsd": "compare_string_dword", "cmpsq": "compare_string_qword",
+	"cmpsd": "compare_string_double_word", "cmpsq": "compare_string_quad_word",
 	"stosb": "store_string_byte", "stosw": "store_string_word",
-	"stosd": "store_string_dword", "stosq": "store_string_qword",
+	"stosd": "store_string_double_word", "stosq": "store_string_quad_word",
 	"lodsb": "load_string_byte", "lodsw": "load_string_word",
-	"lodsd": "load_string_dword", "lodsq": "load_string_qword",
+	"lodsd": "load_string_double_word", "lodsq": "load_string_quad_word",
 	"scasb": "scan_string_byte", "scasw": "scan_string_word",
-	"scasd": "scan_string_dword", "scasq": "scan_string_qword",
+	"scasd": "scan_string_double_word", "scasq": "scan_string_quad_word",
 
 	"clc": "clear_carry_flag", "stc": "set_carry_flag",
 	"cld": "clear_direction_flag", "std": "set_direction_flag",
 	"cli": "clear_interrupt_flag", "sti": "set_interrupt_flag",
 	"clac": "clear_ac_flag", "stac": "set_ac_flag",
 	"cmc":  "complement_carry_flag",
-	"lahf": "load_flags_into_ah", "sahf": "store_ah_into_flags",
+	"lahf": "load_flags_into_accumulator_8_high", "sahf": "store_accumulator_8_high_into_flags",
 
-	"cbw": "convert_byte_to_word", "cwde": "convert_word_to_dword",
-	"cdqe": "convert_dword_to_qword",
-	"cwd":  "convert_word_to_dword_pair", "cdq": "convert_dword_to_qword_pair",
-	"cqo": "convert_qword_to_oword_pair",
+	"cbw": "convert_byte_to_word", "cwde": "convert_word_to_double_word",
+	"cdqe": "convert_double_word_to_quad_word",
+	"cwd":  "convert_word_to_double_word_pair", "cdq": "convert_double_word_to_quad_word_pair",
+	"cqo": "convert_quad_word_to_octa_word_pair",
 
 	"syscall":  "syscall_invoke",
 	"sysenter": "system_enter", "sysexit": "system_exit", "sysret": "system_return",
 	"int": "interrupt", "int3": "interrupt_3", "int1": "interrupt_1",
 	"into": "interrupt_on_overflow",
-	"iret": "return_from_interrupt", "iretd": "return_from_interrupt_dword",
-	"iretq": "return_from_interrupt_qword",
+	"iret": "return_from_interrupt", "iretd": "return_from_interrupt_double_word",
+	"iretq": "return_from_interrupt_quad_word",
 	"hlt":   "halt", "nop": "no_operation", "pause": "pause",
 	"cpuid": "cpu_identification", "ud2": "undefined_instruction",
 	"lock":  "lock_bus",
@@ -215,7 +217,7 @@ var sizedIns = map[string]bool{
 }
 
 var sizeSuffix = map[string]string{
-	"byte": "_byte", "word": "_word", "dword": "_dword", "qword": "_qword",
+	"byte": "_byte", "word": "_word", "dword": "_double_word", "qword": "_quad_word",
 }
 
 // implicitOperand mnemonics carry memory operands that the readable macros

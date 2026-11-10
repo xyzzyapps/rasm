@@ -114,3 +114,6 @@
 
 ; --- CET Shadow Stack ---
 %include "macros/60-cet-shadow-stack.nasm"
+
+; --- Verbose aliases (double_word, code_segment, ...) ---
+%include "macros/61-verbose-names.nasm"

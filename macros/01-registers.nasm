@@ -11,7 +11,16 @@
 ; are also defined further below.
 ; Raw register names (rax, eax, ax, al, ...) always work as well.
 
-; Segment Registers
+; Segment registers.
+; code_segment is the name to use. segment_cs remains for old source.
+; File 04 also defines segment_cs as the colon form cs:.
+%define code_segment cs
+%define data_segment ds
+%define extra_segment es
+%define stack_segment ss
+; Intel does not expand the FS and GS names.
+%define fs_segment fs
+%define gs_segment gs
 %define segment_cs cs
 %define segment_ds ds
 %define segment_es es
@@ -19,14 +28,25 @@
 %define segment_gs gs
 %define segment_ss ss
 
-; Control Registers
+; Control registers. control_register_0 is CR0.
+%define control_register_0 cr0
+%define control_register_2 cr2
+%define control_register_3 cr3
+%define control_register_4 cr4
+%define control_register_8 cr8
 %define control_cr0 cr0
 %define control_cr2 cr2
 %define control_cr3 cr3
 %define control_cr4 cr4
 %define control_cr8 cr8
 
-; Debug Registers
+; Debug registers.
+%define debug_register_0 dr0
+%define debug_register_1 dr1
+%define debug_register_2 dr2
+%define debug_register_3 dr3
+%define debug_register_6 dr6
+%define debug_register_7 dr7
 %define debug_dr0 dr0
 %define debug_dr1 dr1
 %define debug_dr2 dr2
@@ -35,6 +55,96 @@
 %define debug_dr7 dr7
 
 ; Readable register aliases (defined in full below)
+
+; SSE registers xmm0-xmm15. sse_register_0 is the verbose name.
+%define sse_register_0 xmm0
+%define sse_register_1 xmm1
+%define sse_register_2 xmm2
+%define sse_register_3 xmm3
+%define sse_register_4 xmm4
+%define sse_register_5 xmm5
+%define sse_register_6 xmm6
+%define sse_register_7 xmm7
+%define sse_register_8 xmm8
+%define sse_register_9 xmm9
+%define sse_register_10 xmm10
+%define sse_register_11 xmm11
+%define sse_register_12 xmm12
+%define sse_register_13 xmm13
+%define sse_register_14 xmm14
+%define sse_register_15 xmm15
+
+; AVX registers ymm0-ymm15.
+%define avx_register_0 ymm0
+%define avx_register_1 ymm1
+%define avx_register_2 ymm2
+%define avx_register_3 ymm3
+%define avx_register_4 ymm4
+%define avx_register_5 ymm5
+%define avx_register_6 ymm6
+%define avx_register_7 ymm7
+%define avx_register_8 ymm8
+%define avx_register_9 ymm9
+%define avx_register_10 ymm10
+%define avx_register_11 ymm11
+%define avx_register_12 ymm12
+%define avx_register_13 ymm13
+%define avx_register_14 ymm14
+%define avx_register_15 ymm15
+
+; AVX-512 registers zmm0-zmm31.
+%define avx512_register_0 zmm0
+%define avx512_register_1 zmm1
+%define avx512_register_2 zmm2
+%define avx512_register_3 zmm3
+%define avx512_register_4 zmm4
+%define avx512_register_5 zmm5
+%define avx512_register_6 zmm6
+%define avx512_register_7 zmm7
+%define avx512_register_8 zmm8
+%define avx512_register_9 zmm9
+%define avx512_register_10 zmm10
+%define avx512_register_11 zmm11
+%define avx512_register_12 zmm12
+%define avx512_register_13 zmm13
+%define avx512_register_14 zmm14
+%define avx512_register_15 zmm15
+%define avx512_register_16 zmm16
+%define avx512_register_17 zmm17
+%define avx512_register_18 zmm18
+%define avx512_register_19 zmm19
+%define avx512_register_20 zmm20
+%define avx512_register_21 zmm21
+%define avx512_register_22 zmm22
+%define avx512_register_23 zmm23
+%define avx512_register_24 zmm24
+%define avx512_register_25 zmm25
+%define avx512_register_26 zmm26
+%define avx512_register_27 zmm27
+%define avx512_register_28 zmm28
+%define avx512_register_29 zmm29
+%define avx512_register_30 zmm30
+%define avx512_register_31 zmm31
+
+; MMX registers. multimedia_register_0 is MM0.
+%define multimedia_register_0 mm0
+%define multimedia_register_1 mm1
+%define multimedia_register_2 mm2
+%define multimedia_register_3 mm3
+%define multimedia_register_4 mm4
+%define multimedia_register_5 mm5
+%define multimedia_register_6 mm6
+%define multimedia_register_7 mm7
+
+; AVX-512 mask registers k0-k7.
+%define mask_register_0 k0
+%define mask_register_1 k1
+%define mask_register_2 k2
+%define mask_register_3 k3
+%define mask_register_4 k4
+%define mask_register_5 k5
+%define mask_register_6 k6
+%define mask_register_7 k7
 
 ; XMM Registers
 %define xmm_0 xmm0

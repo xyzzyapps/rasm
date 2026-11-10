@@ -330,3 +330,11 @@
     vzeroall
 %endmacro
 
+%macro avx_store_non_temporal_packed_integer 2
+    vmovntdq %1, %2
+%endmacro
+
+%macro avx_load_non_temporal_packed_integer 2
+    vmovntdqa %1, %2
+%endmacro
+

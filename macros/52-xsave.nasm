@@ -44,3 +44,35 @@
 %macro set_extended_state 2
     xsetbv %1, %2
 %endmacro
+
+%macro save_x87_mmx_sse_state_64 1
+    fxsave64 %1
+%endmacro
+
+%macro restore_x87_mmx_sse_state_64 1
+    fxrstor64 %1
+%endmacro
+
+%macro save_extended_state_64 1
+    xsave64 %1
+%endmacro
+
+%macro restore_extended_state_64 1
+    xrstor64 %1
+%endmacro
+
+%macro save_extended_state_compacted_64 1
+    xsavec64 %1
+%endmacro
+
+%macro save_extended_state_optimized_64 1
+    xsaveopt64 %1
+%endmacro
+
+%macro save_extended_state_supervisor_64 1
+    xsaves64 %1
+%endmacro
+
+%macro restore_extended_state_supervisor_64 1
+    xrstors64 %1
+%endmacro

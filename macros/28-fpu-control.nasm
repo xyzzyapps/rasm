@@ -43,6 +43,14 @@
     fnstsw ax
 %endmacro
 
+%macro fpu_store_status_word_to_accumulator_16 0
+    fstsw ax
+%endmacro
+
+%macro fpu_store_status_word_to_accumulator_16_no_wait 0
+    fnstsw ax
+%endmacro
+
 %macro fpu_save_state 1
     fsave %1
 %endmacro
@@ -84,6 +92,14 @@
     ffree %1
 %else
     ffree
+%endif
+%endmacro
+
+%macro fpu_free_register_and_pop 0-1
+%if %0 = 1
+    ffreep %1
+%else
+    ffreep
 %endif
 %endmacro
 

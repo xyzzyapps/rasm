@@ -198,3 +198,67 @@
     movq2dq %1, %2
 %endmacro
 
+%macro mmx_and_quadword 2
+    pand %1, %2
+%endmacro
+
+%macro mmx_and_not_quadword 2
+    pandn %1, %2
+%endmacro
+
+%macro mmx_or_quadword 2
+    por %1, %2
+%endmacro
+
+%macro mmx_xor_quadword 2
+    pxor %1, %2
+%endmacro
+
+%macro mmx_subtract_bytes 2
+    psubb %1, %2
+%endmacro
+
+%macro mmx_subtract_words 2
+    psubw %1, %2
+%endmacro
+
+%macro mmx_subtract_dwords 2
+    psubd %1, %2
+%endmacro
+
+%macro mmx_subtract_quadwords 2
+    psubq %1, %2
+%endmacro
+
+%macro mmx_unpack_high_bytes 2
+    punpckhbw %1, %2
+%endmacro
+
+%macro mmx_unpack_high_words 2
+    punpckhwd %1, %2
+%endmacro
+
+%macro mmx_unpack_high_dwords 2
+    punpckhdq %1, %2
+%endmacro
+
+%macro mmx_unpack_low_bytes 2
+    punpcklbw %1, %2
+%endmacro
+
+%macro mmx_unpack_low_words 2
+    punpcklwd %1, %2
+%endmacro
+
+%macro mmx_unpack_low_dwords 2
+    punpckldq %1, %2
+%endmacro
+
+%macro mmx_shuffle_words 3
+    pshufw %1, %2, %3
+%endmacro
+
+%macro mmx_sum_of_absolute_differences 2
+    psadbw %1, %2
+%endmacro
+

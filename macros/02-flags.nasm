@@ -20,6 +20,7 @@
 %define flag_virtual_interrupt 19
 %define flag_virtual_interrupt_pending 20
 %define flag_id             21
+%define flag_identification 21
 
 ; Flag symbolic names
 %define zero_flag           ZF

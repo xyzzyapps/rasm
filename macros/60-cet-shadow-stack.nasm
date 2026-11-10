@@ -26,6 +26,14 @@
     rstorssp %1
 %endmacro
 
+%macro read_shadow_stack_pointer_dword 1
+    rdsspd %1
+%endmacro
+
+%macro read_shadow_stack_pointer_qword 1
+    rdsspq %1
+%endmacro
+
 %macro set_shadow_stack_busy 0
     setssbsy
 %endmacro

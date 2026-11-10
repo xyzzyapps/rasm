@@ -150,3 +150,35 @@
     xorps %1, %2
 %endmacro
 
+%macro sse_compare_unordered_scalar_single 2
+    ucomiss %1, %2
+%endmacro
+
+%macro sse_convert_packed_integers_to_packed_singles 2
+    cvtpi2ps %1, %2
+%endmacro
+
+%macro sse_convert_packed_singles_to_packed_integers 2
+    cvtps2pi %1, %2
+%endmacro
+
+%macro sse_convert_packed_singles_to_packed_integers_truncate 2
+    cvttps2pi %1, %2
+%endmacro
+
+%macro sse_convert_integer_to_scalar_single 2
+    cvtsi2ss %1, %2
+%endmacro
+
+%macro sse_convert_scalar_single_to_integer 2
+    cvtss2si %1, %2
+%endmacro
+
+%macro sse_convert_scalar_single_to_integer_truncate 2
+    cvttss2si %1, %2
+%endmacro
+
+%macro sse_store_non_temporal_scalar_single 2
+    movntss %1, %2
+%endmacro
+

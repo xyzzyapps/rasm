@@ -141,6 +141,18 @@
     jrcxz %1
 %endmacro
 
+%macro jump_if_counter_16_zero 1
+    jcxz %1
+%endmacro
+
+%macro jump_if_counter_32_zero 1
+    jecxz %1
+%endmacro
+
+%macro jump_if_counter_64_zero 1
+    jrcxz %1
+%endmacro
+
 %macro end_branch_32 0
     endbr32
 %endmacro

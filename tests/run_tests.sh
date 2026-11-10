@@ -100,6 +100,12 @@ echo "--- examples/example.asm ---"
 check "examples/example.asm (elf64)" assemble elf64 "$ROOT/examples/example.asm" "$BUILD/example_linux.o"
 check "examples/example.asm (win64)" assemble win64 "$ROOT/examples/example.asm" "$BUILD/example_win.o"
 
+echo "--- examples/avx_*.asm ---"
+for src in avx_physics avx_audio avx_game; do
+    check "examples/$src.asm (elf64)" assemble elf64 "$ROOT/examples/$src.asm" "$BUILD/${src}_linux.o"
+    check "examples/$src.asm (win64)" assemble win64 "$ROOT/examples/$src.asm" "$BUILD/${src}_win.o"
+done
+
 # ---------------------------------------------------------------------------
 # 3. examples/sdl_rectangle.asm
 # ---------------------------------------------------------------------------

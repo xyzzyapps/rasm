@@ -354,3 +354,131 @@
     xorpd %1, %2
 %endmacro
 
+%macro sse2_compare_unordered_scalar_double 2
+    ucomisd %1, %2
+%endmacro
+
+%macro sse2_shuffle_packed_dwords 3
+    pshufd %1, %2, %3
+%endmacro
+
+%macro sse2_shuffle_high_words 3
+    pshufhw %1, %2, %3
+%endmacro
+
+%macro sse2_shuffle_low_words 3
+    pshuflw %1, %2, %3
+%endmacro
+
+%macro sse2_shift_left_bytes 2
+    pslldq %1, %2
+%endmacro
+
+%macro sse2_shift_right_bytes 2
+    psrldq %1, %2
+%endmacro
+
+%macro sse2_unpack_high_bytes 2
+    punpckhbw %1, %2
+%endmacro
+
+%macro sse2_unpack_high_words 2
+    punpckhwd %1, %2
+%endmacro
+
+%macro sse2_unpack_high_dwords 2
+    punpckhdq %1, %2
+%endmacro
+
+%macro sse2_unpack_high_quadwords 2
+    punpckhqdq %1, %2
+%endmacro
+
+%macro sse2_unpack_low_bytes 2
+    punpcklbw %1, %2
+%endmacro
+
+%macro sse2_unpack_low_words 2
+    punpcklwd %1, %2
+%endmacro
+
+%macro sse2_unpack_low_dwords 2
+    punpckldq %1, %2
+%endmacro
+
+%macro sse2_unpack_low_quadwords 2
+    punpcklqdq %1, %2
+%endmacro
+
+%macro sse2_convert_packed_dwords_to_packed_doubles 2
+    cvtdq2pd %1, %2
+%endmacro
+
+%macro sse2_convert_packed_dwords_to_packed_singles 2
+    cvtdq2ps %1, %2
+%endmacro
+
+%macro sse2_convert_packed_doubles_to_packed_dwords 2
+    cvtpd2dq %1, %2
+%endmacro
+
+%macro sse2_convert_packed_doubles_to_packed_integers 2
+    cvtpd2pi %1, %2
+%endmacro
+
+%macro sse2_convert_packed_doubles_to_packed_singles 2
+    cvtpd2ps %1, %2
+%endmacro
+
+%macro sse2_convert_packed_integers_to_packed_doubles 2
+    cvtpi2pd %1, %2
+%endmacro
+
+%macro sse2_convert_packed_singles_to_packed_dwords 2
+    cvtps2dq %1, %2
+%endmacro
+
+%macro sse2_convert_packed_singles_to_packed_doubles 2
+    cvtps2pd %1, %2
+%endmacro
+
+%macro sse2_convert_scalar_double_to_integer 2
+    cvtsd2si %1, %2
+%endmacro
+
+%macro sse2_convert_scalar_double_to_scalar_single 2
+    cvtsd2ss %1, %2
+%endmacro
+
+%macro sse2_convert_integer_to_scalar_double 2
+    cvtsi2sd %1, %2
+%endmacro
+
+%macro sse2_convert_scalar_single_to_scalar_double 2
+    cvtss2sd %1, %2
+%endmacro
+
+%macro sse2_convert_scalar_double_to_integer_truncate 2
+    cvttsd2si %1, %2
+%endmacro
+
+%macro sse2_convert_packed_doubles_to_packed_dwords_truncate 2
+    cvttpd2dq %1, %2
+%endmacro
+
+%macro sse2_convert_packed_doubles_to_packed_integers_truncate 2
+    cvttpd2pi %1, %2
+%endmacro
+
+%macro sse2_convert_packed_singles_to_packed_dwords_truncate 2
+    cvttps2dq %1, %2
+%endmacro
+
+%macro sse2_store_non_temporal_packed_integer 2
+    movntdq %1, %2
+%endmacro
+
+%macro sse2_store_non_temporal_scalar_double 2
+    movntsd %1, %2
+%endmacro
+

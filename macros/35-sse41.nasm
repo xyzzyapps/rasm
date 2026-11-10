@@ -78,3 +78,27 @@
     pcmpestrm %1, %2, %3
 %endmacro
 
+%macro sse41_blend_variable_packed_double 3
+    blendvpd %1, %2, %3
+%endmacro
+
+%macro sse41_blend_variable_packed_single 3
+    blendvps %1, %2, %3
+%endmacro
+
+%macro sse41_multiply_packed_dwords 2
+    pmuldq %1, %2
+%endmacro
+
+%macro sse41_minimum_horizontal_word_position 2
+    phminposuw %1, %2
+%endmacro
+
+%macro sse41_sum_absolute_differences_with_mask 3
+    mpsadbw %1, %2, %3
+%endmacro
+
+%macro sse41_load_non_temporal_packed_integer 2
+    movntdqa %1, %2
+%endmacro
+

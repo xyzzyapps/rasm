@@ -21,7 +21,8 @@ func TestCoreEncodings(t *testing.T) {
 		{"c3", 0x2000, "ret", "return_from_procedure"},
 		{"0f05", 0x2000, "syscall", "syscall_invoke"},
 		{"f3aa", 0x2000, "", "repeat store_string_byte"},
-		{"830001", 0x2000, "", "add_dword [accumulator], 0x1"},
+		{"830001", 0x2000, "", "add_double_word [accumulator], 0x1"},
+		{"488cc8", 0x2000, "mov rax, cs", "move accumulator, code_segment"},
 		{"4989c8", 0x2000, "", "move register_r8, counter"},
 		{"0fb600", 0x2000, "", "move_with_zero_extend_byte accumulator_32, [accumulator]"},
 	}
